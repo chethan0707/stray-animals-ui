@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "830566542672",
+    "project_id": "stray-animals-127cf",
+    "storage_bucket": "stray-animals-127cf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830566542672:android:ba1168a8da984d55c9d055",
+        "android_client_info": {
+          "package_name": "com.koderkt.stray_animals_ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "830566542672-ur74s03c637ak3m3l2fhv35n0pese0vv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt4pbkustRWAUuLQOb_0IjFDO28-RAkVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "830566542672-ur74s03c637ak3m3l2fhv35n0pese0vv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830566542672:android:34fb028ec66b2624c9d055",
+        "android_client_info": {
+          "package_name": "conm.koderkt.strayanimals"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "830566542672-ur74s03c637ak3m3l2fhv35n0pese0vv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt4pbkustRWAUuLQOb_0IjFDO28-RAkVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "830566542672-ur74s03c637ak3m3l2fhv35n0pese0vv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
