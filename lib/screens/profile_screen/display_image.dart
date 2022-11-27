@@ -30,7 +30,7 @@ class DisplayImage extends StatelessWidget {
 
   // Builds Profile Image
   Widget buildImage(Color color) {
-    final image = imagePath.contains('https://')
+    final image = imagePath.contains('http')
         ? NetworkImage(imagePath)
         : FileImage(File(imagePath));
 

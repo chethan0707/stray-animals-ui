@@ -2,12 +2,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stray_animals_ui/models/user.dart' as u;
 import 'package:stray_animals_ui/screens/login_screen.dart';
+import 'package:stray_animals_ui/screens/nearest_pet_store.dart';
 import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
 import 'package:stray_animals_ui/screens/user_home.dart';
 
-class NavBar extends StatelessWidget {
+class NavBar extends StatefulWidget {
   final u.User user;
-  const NavBar({super.key, required this.user});
+  final BuildContext context;
+  const NavBar({super.key, required this.user, required this.context});
+
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -16,18 +29,18 @@ class NavBar extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(user.userName!),
-            accountEmail: Text(user.email!),
+            accountName: Text(widget.user.userName!),
+            accountEmail: Text(widget.user.email!),
             currentAccountPicture: InkWell(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProfilePage(user: user),
+                  builder: (context) => ProfilePage(user: widget.user),
                 ));
               },
               child: CircleAvatar(
                 child: ClipOval(
                   child: Image.network(
-                    'https://as2.ftcdn.net/v2/jpg/01/18/03/35/1000_F_118033506_uMrhnrjBWBxVE9sYGTgBht8S5liVnIeY.jpg',
+                    "http://localhost:8080/file/download/${widget.user.email}",
                     fit: BoxFit.cover,
                     width: 90,
                     height: 90,
@@ -47,11 +60,13 @@ class NavBar extends StatelessWidget {
             leading: const Icon(Icons.house),
             title: const Text('NGOs'),
             onTap: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => UserHome(user: user),
-                  ),
-                  (route) => false);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserHome(user: widget.user),
+                ),
+                (route) => false,
+              );
             },
           ),
           ListTile(
@@ -65,10 +80,15 @@ class NavBar extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
-            leading: const Icon(Icons.local_hospital),
-            title: const Text('Near by Veterinary Clinics'),
-            onTap: () {},
-          ),
+              leading: const Icon(Icons.local_hospital),
+              title: const Text('Near by Veterinary Clinics'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => NearestPetClinics(user: widget.user),
+                  ),
+                );
+              }),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.share),

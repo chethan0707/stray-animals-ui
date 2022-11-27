@@ -93,7 +93,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
       String role, String phone) async {
     await ref
         .read(authRepositoryProvider)
-        .createUser(email, password, role, phone, userName);
+        .createUser(email, password, role, phone, userName,);
   }
 
   Future<void> signUpNGO(String email, String password, String ngoName,
@@ -207,7 +207,10 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
               child: InkWell(
                 onTap: () async {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SetPhotoScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => SetPhotoScreen(
+                              email: widget.email,
+                            )),
                   );
                 },
                 child: Container(
@@ -261,7 +264,6 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                       ),
                     );
                   } else if (_currentItemSelected == "User") {
-                    log("hello 4");
                     var scMessanger = ScaffoldMessenger.of(context);
                     var navContext = Navigator.of(context);
                     var flag = await doesUserExist(widget.email);
@@ -274,7 +276,6 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                         ),
                       );
                     } else {
-                      log("Sign up ");
                       await signUpUser(widget.email, widget.password, userName,
                           _currentItemSelected, phoneNumber);
                       navContext.push(MaterialPageRoute(
@@ -495,7 +496,6 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                 : hintText == "Zip-code"
                     ? 6
                     : 20,
-                    
             keyboardType: hintText == "Phone number" || hintText == "Zip-code"
                 ? TextInputType.number
                 : TextInputType.text,

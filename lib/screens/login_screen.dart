@@ -163,6 +163,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   email = _emailController.text;
                   password = _passwordController.text;
                   var navContext = Navigator.of(context);
+                  log("hello login");
                   final firebaseUser = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: email, password: password);
@@ -171,6 +172,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     log(us);
                     if (us == "User") {
                       var use = await getUser(email);
+                      
                       navContext.pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => UserHome(

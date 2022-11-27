@@ -1,24 +1,24 @@
+import 'dart:developer';
 import 'dart:io';
-
+import 'package:dio/dio.dart';
+import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
+import "package:http_parser/http_parser.dart";
 import 'common_buttons.dart';
 import 'constants.dart';
 import 'select_photo_options_screen.dart';
 
-// ignore: must_be_immutable
 class SetPhotoScreen extends StatefulWidget {
-  const SetPhotoScreen({super.key});
-
-  static const id = 'set_photo_screen';
-
+  const SetPhotoScreen({super.key, required this.email});
+  final String email;
   @override
   State<SetPhotoScreen> createState() => _SetPhotoScreenState();
 }
 
+//
 class _SetPhotoScreenState extends State<SetPhotoScreen> {
   File? _image;
 
@@ -36,6 +36,42 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
       print(e);
       Navigator.of(context).pop();
     }
+  }
+
+  Future<String> uploadImage() async {
+    var url = "http://localhost:8080/file/upload";
+
+    // var request = http.MultipartRequest('POST', Uri.parse(url));
+
+    // request.files.add(
+    //   http.MultipartFile.fromBytes(
+    //     "file",
+    //     File(_image!.path).readAsBytesSync(),
+    //     contentType: MediaType('image', 'jpeg'),
+    //     filename: "widget.email",
+    //   ),
+    // );
+
+    // return "response.body.toString()";
+
+    String fileName = widget.email;
+  
+    FormData data = FormData.fromMap({
+      "file": await MultipartFile.fromFile(
+        _image!.path,
+        filename: fileName,
+      ),
+    });
+
+    Dio dio = Dio();
+
+    try {
+      var res = await dio.post(url, data: data);
+      log(res.data.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+    return "";
   }
 
   Future<File?> _cropImage({required File imageFile}) async {
@@ -139,6 +175,7 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
                 children: [
                   InkWell(
                     onTap: () {
+                      uploadImage();
                       Navigator.of(context).pop();
                     },
                     child: const Text(

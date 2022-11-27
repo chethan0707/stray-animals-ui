@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stray_animals_ui/components/nav_bar.dart';
+import 'package:stray_animals_ui/components/user_nav_bar.dart';
 import 'package:http/http.dart' as http;
 import '../models/ngo_model.dart';
 import '../models/user.dart' as u;
@@ -42,6 +42,7 @@ class _UserHomeState extends ConsumerState<UserHome> {
         ),
       ),
       drawer: NavBar(
+        context: context,
         user: widget.user,
       ),
       backgroundColor: Colors.grey[300],
@@ -61,7 +62,7 @@ class _UserHomeState extends ConsumerState<UserHome> {
                       padding: const EdgeInsets.all(15),
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                           color: Colors.deepPurple[300],
                         ),
                         child: Column(

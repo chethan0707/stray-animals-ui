@@ -166,19 +166,20 @@ class AuthRepository {
       var url = "http://localhost:8080/api/user/create";
       var res = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-
-      var response = _client.post(Uri.parse(url),
-          body: jsonEncode(
-            {
-              "email": email,
-              "phone": phone,
-              "userName": userName,
-              "role": role,
-              "id": null
-            },
-          ),
-          headers: {'Content-type': 'application/json'});
-      return res.user;
+      var b = jsonEncode({
+        "id": null,
+        "userName": userName,
+        "phone": phone,
+        "role": role,
+        "email": email,
+        "profileURL": email
+      });
+      log(b.toString());
+      if (res.user != null) {
+        var response = _client.post(Uri.parse(url),
+            body: b, headers: {'Content-type': 'application/json'});
+        return res.user;
+      }
     } catch (e) {
       log(e.toString());
     }

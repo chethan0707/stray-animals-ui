@@ -59,13 +59,14 @@ class _ProfilePageState extends State<ProfilePage> {
             height: 40,
           ),
           InkWell(
-              onTap: () {
-                navigateSecondPage(const SetPhotoScreen());
-              },
+              // onTap: () {
+              //   navigateSecondPage(const SetPhotoScreen());
+              // },
               child: DisplayImage(
-                imagePath: userProfiles.image,
-                onPressed: () {},
-              )),
+            imagePath:
+                "http://localhost:8080/file/download/${userProfiles.email}",
+            onPressed: () {},
+          )),
           buildUserInfoDisplay(
             userProfiles.name,
             'Name',
