@@ -80,14 +80,14 @@ class AuthRepository {
     try {
       var res = await _client.get(Uri.parse(url));
       log(res.statusCode.toString());
-      var result;
-      result = json.decode(res.body);
+      var result = json.decode(res.body);
       if (result == null) {
         return null;
       }
       var newUser = user.User.fromJson(result);
       return newUser;
     } catch (e) {
+      log("in csatch bbloc");
       log(e.toString());
       return null;
     }
@@ -123,7 +123,7 @@ class AuthRepository {
         result = json.decode(res.body);
       }
       if (result != null) {
-        log("not null");
+        log(result.toString());
         var newUser = user.User.fromJson(result);
         return newUser.role!;
       }
@@ -172,9 +172,9 @@ class AuthRepository {
         "phone": phone,
         "role": role,
         "email": email,
-        "profileURL": email
+        "profileURL": email,
+        "userReports": []
       });
-      log(b.toString());
       if (res.user != null) {
         var response = _client.post(Uri.parse(url),
             body: b, headers: {'Content-type': 'application/json'});

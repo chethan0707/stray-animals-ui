@@ -33,6 +33,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   late String zipCode = "";
   late String state = "";
   late String phoneNumber = "";
+  bool isProfileImageSet = false;
   @override
   void initState() {
     _usernameController.addListener(() {
@@ -91,9 +92,13 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
 
   Future<void> signUpUser(String email, String password, String userName,
       String role, String phone) async {
-    await ref
-        .read(authRepositoryProvider)
-        .createUser(email, password, role, phone, userName,);
+    await ref.read(authRepositoryProvider).createUser(
+          email,
+          password,
+          role,
+          phone,
+          userName,
+        );
   }
 
   Future<void> signUpNGO(String email, String password, String ngoName,
@@ -206,6 +211,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
               padding: const EdgeInsets.only(left: 25, right: 25),
               child: InkWell(
                 onTap: () async {
+                  isProfileImageSet = true;
                   Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (context) => SetPhotoScreen(
@@ -252,6 +258,12 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                         content: Text("Fields cannot be empty"),
                       ),
                     );
+                  } else if (isProfileImageSet == false) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Uppload profile picture"),
+                      ),
+                    );
                   } else if (_currentItemSelected == "NGO" &&
                       (ngoName.isEmpty ||
                           city.isEmpty ||
@@ -269,7 +281,6 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                     var flag = await doesUserExist(widget.email);
                     if (flag == true) {
                       log("user already exists");
-
                       scMessanger.showSnackBar(
                         const SnackBar(
                           content: Text("Email already registered"),

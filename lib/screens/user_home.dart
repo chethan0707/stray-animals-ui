@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/components/user_nav_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:stray_animals_ui/screens/ngo_descprition.dart';
 import '../models/ngo_model.dart';
 import '../models/user.dart' as u;
 import '../repositories/auth_repository.dart';
@@ -55,27 +55,45 @@ class _UserHomeState extends ConsumerState<UserHome> {
                 return const Center(child: Text('No NGOs found'));
               } else {
                 return ListView.builder(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   itemCount: ngos.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.all(15),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(5)),
-                          color: Colors.deepPurple[300],
-                        ),
-                        child: Column(
-                          children: [
-                            ListTile(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => NGODesc(
+                                ngo: ngos[index],
+                                userEmail: widget.user.email!,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(5)),
+                            color: Colors.deepPurple[200],
+                          ),
+                          child: Column(
+                            children: [
+                              ListTile(
                                 title: Text(
-                              ngos[index].name,
-                            )),
-                            ListTile(
-                                title: Text(
-                              ngos[index].city,
-                            )),
-                          ],
+                                  ngos[index].name,
+                                  style: GoogleFonts.aldrich(
+                                      fontSize: 16, color: Colors.black),
+                                ),
+                              ),
+                              ListTile(
+                                  title: Text(
+                                ngos[index].city,
+                                style: GoogleFonts.aldrich(
+                                    fontSize: 16, color: Colors.black),
+                              )),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -93,8 +111,8 @@ class _UserHomeState extends ConsumerState<UserHome> {
   Future<List<NGO>> getItems() async {
     final response = await http.get(
       Uri.parse("http://localhost:8080/api/ngos").replace(
-        queryParameters: {"email": FirebaseAuth.instance.currentUser!.email},
-      ),
+          // queryParameters: {"email": FirebaseAuth.instance.currentUser!.email},
+          ),
     );
     var jsonBody = json.decode(response.body);
     var items = List<NGO>.from(jsonBody.map((model) => NGO.fromJson(model)));

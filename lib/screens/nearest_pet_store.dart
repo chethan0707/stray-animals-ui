@@ -111,7 +111,7 @@ class _NearestPetClinicsState extends ConsumerState<NearestPetClinics> {
                             width: 3)),
                     border: InputBorder.none,
                     hintText: "Search pet clinics",
-                    suffixIcon: Icon(
+                    suffixIcon: const Icon(
                       Icons.search,
                       color: Colors.deepPurple,
                     ),

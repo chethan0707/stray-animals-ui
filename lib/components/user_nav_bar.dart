@@ -1,25 +1,33 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/models/user.dart' as u;
+import 'package:stray_animals_ui/repositories/auth_repository.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:stray_animals_ui/screens/nearest_pet_store.dart';
 import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
 import 'package:stray_animals_ui/screens/user_home.dart';
 
-class NavBar extends StatefulWidget {
+class NavBar extends ConsumerStatefulWidget {
   final u.User user;
   final BuildContext context;
   const NavBar({super.key, required this.user, required this.context});
 
   @override
-  State<NavBar> createState() => _NavBarState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _NavBarState();
 }
 
-class _NavBarState extends State<NavBar> {
+class _NavBarState extends ConsumerState<NavBar> {
   @override
   void initState() {
+    // getImageUrl(widget.user.email);
     super.initState();
   }
+
+  // getImageUrl(String? email) async {
+  //   var user = await ref.read(authRepositoryProvider).getUserFromDB(email!);
+  //   widget.user.profileUrl = user!.profileUrl;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +68,11 @@ class _NavBarState extends State<NavBar> {
             leading: const Icon(Icons.house),
             title: const Text('NGOs'),
             onTap: () {
-              Navigator.pushAndRemoveUntil(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => UserHome(user: widget.user),
                 ),
-                (route) => false,
               );
             },
           ),

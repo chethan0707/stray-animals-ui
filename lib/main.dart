@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:stray_animals_ui/screens/nearest_pet_store.dart';
+import 'package:stray_animals_ui/screens/user_reports/user_report_screen.dart';
 
 import 'blocs/application_bloc.dart';
 
@@ -15,7 +16,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-  
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -28,6 +29,8 @@ class _MyAppState extends State<MyApp> {
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
+        // home: UserReportScreen(
+        //     userEmail: "s@gmail.com", ngoEmail: "koderktngo@gmail.com"),
         home: LoginScreen(),
       ),
     );

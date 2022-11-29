@@ -163,7 +163,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   email = _emailController.text;
                   password = _passwordController.text;
                   var navContext = Navigator.of(context);
-                  log("hello login");
                   final firebaseUser = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: email, password: password);

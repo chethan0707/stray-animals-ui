@@ -21,7 +21,7 @@ class SetPhotoScreen extends StatefulWidget {
 //
 class _SetPhotoScreenState extends State<SetPhotoScreen> {
   File? _image;
-
+  String imageURL = "";
   Future _pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -55,21 +55,40 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
     // return "response.body.toString()";
 
     String fileName = widget.email;
-  
-    FormData data = FormData.fromMap({
-      "file": await MultipartFile.fromFile(
-        _image!.path,
-        filename: fileName,
-      ),
-    });
-
     Dio dio = Dio();
+    if (_image != null) {
+      log("file available");
 
-    try {
-      var res = await dio.post(url, data: data);
-      log(res.data.toString());
-    } catch (e) {
-      log(e.toString());
+      FormData data = FormData.fromMap({
+        "file": await MultipartFile.fromFile(
+          _image!.path,
+          filename: fileName,
+        ),
+      });
+      try {
+        var res = await dio.post(url, data: data);
+        log(res.data.toString());
+      } catch (e) {
+        log(e.toString());
+      }
+    } else {
+      log("file not available");
+      var im = await dio.get(
+          "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
+          options: Options(responseType: ResponseType.bytes));
+      FormData data = FormData.fromMap({
+        "file": MultipartFile.fromBytes(
+          im.data,
+          filename: fileName,
+        ),
+      });
+
+      try {
+        var res = await dio.post(url, data: data);
+        log(res.data.toString());
+      } catch (e) {
+        log(e.toString());
+      }
     }
     return "";
   }
@@ -174,9 +193,10 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   InkWell(
-                    onTap: () {
-                      uploadImage();
-                      Navigator.of(context).pop();
+                    onTap: () async {
+                      var navCon = Navigator.of(context);
+                      await uploadImage();
+                      navCon.pop();
                     },
                     child: const Text(
                       'Save',

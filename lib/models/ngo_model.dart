@@ -69,7 +69,7 @@ class Address {
 }
 
 class Coordinates {
-  Coordinates({
+  Coordinates({               
     required this.x,
     required this.y,
     required this.type,
