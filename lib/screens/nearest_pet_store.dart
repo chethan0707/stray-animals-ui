@@ -80,7 +80,7 @@ class _NearestPetClinicsState extends ConsumerState<NearestPetClinics> {
                               ),
                             );
                           },
-                        )),
+                        ),),
                     const SizedBox(
                       width: 20,
                     ),
@@ -91,7 +91,7 @@ class _NearestPetClinicsState extends ConsumerState<NearestPetClinics> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Padding(

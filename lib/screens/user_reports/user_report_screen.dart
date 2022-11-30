@@ -27,6 +27,8 @@ class _UserReportScreenState extends ConsumerState<UserReportScreen> {
   List<String> _urls = [];
   final TextEditingController _descriptionController = TextEditingController();
   String description = "";
+  int uploadItem = 0;
+  bool _isUploading = false;
   @override
   void initState() {
     _descriptionController.addListener(() {
@@ -49,7 +51,7 @@ class _UserReportScreenState extends ConsumerState<UserReportScreen> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.black,
             )),
@@ -62,107 +64,122 @@ class _UserReportScreenState extends ConsumerState<UserReportScreen> {
       ),
       backgroundColor: Colors.grey[300],
       body: SafeArea(
-          child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 20),
-            child: Row(
-              children: [
-                Text("Enter Description",
-                    style: GoogleFonts.aldrich(
-                      fontSize: 20,
-                    )),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          buildTextFiled(_descriptionController, 'Description'),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple.shade400),
-            onPressed: () async {
-              await selectImage();
-              setState(() {});
-            },
-            icon: const Icon(Icons.image_outlined),
-            label: const Text("Select images"),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple.shade400),
-                onPressed: () async {
-                  var cont = ScaffoldMessenger.of(context);
-                  var navCont = Navigator.of(context);
-                  await uploadFunction(_selectedFiles);
-                  if (description.isEmpty) {
-                    cont.showSnackBar(const SnackBar(
-                        content: Text(
-                      'Description cannot be empty',
-                    )));
-                  } else if (_selectedFiles.isEmpty) {
-                    cont.showSnackBar(
-                      const SnackBar(
-                        content: Text('Upload images'),
+          child: _isUploading
+              ? showLoading()
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0, top: 20),
+                      child: Row(
+                        children: [
+                          Text("Enter Description",
+                              style: GoogleFonts.aldrich(
+                                fontSize: 20,
+                              )),
+                        ],
                       ),
-                    );
-                  } else if (await registerCase(cont) == true) {
-                    navCont.pop();
-                  }
-                },
-                icon: const Icon(Icons.image_outlined),
-                label: const Text("Upload"),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade400),
-                onPressed: () {
-                  _selectedFiles.clear();
-                  setState(() {});
-                },
-                icon: const Icon(Icons.delete),
-                label: const Text("Clear"),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          _selectedFiles.isEmpty
-              ? const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                  child: Text("No images selected"),
-                )
-              : Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3),
-                    itemCount: _selectedFiles.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      log(_selectedFiles.length.toString());
-                      return Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Image.file(
-                          File(_selectedFiles[index].path),
-                          fit: BoxFit.cover,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildTextFiled(_descriptionController, 'Description'),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple.shade400),
+                      onPressed: () async {
+                        await selectImage();
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.image_outlined),
+                      label: const Text("Select images"),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepPurple.shade400),
+                          onPressed: () async {
+                            var cont = ScaffoldMessenger.of(context);
+                            var navCont = Navigator.of(context);
+                            if (_selectedFiles.isNotEmpty) {
+                              await uploadFunction(_selectedFiles);
+                            }
+                            if (description.isEmpty) {
+                              cont.showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Description cannot be empty',
+                                  ),
+                                ),
+                              );
+                            } else if (_selectedFiles.isEmpty) {
+                              cont.showSnackBar(
+                                const SnackBar(
+                                  content: Text('Upload images'),
+                                ),
+                              );
+                            } else if (await registerCase(cont) == true) {
+                              cont.showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Case reported sucessfully',
+                                    style: TextStyle(color: Colors.green),
+                                  ),
+                                ),
+                              );
+                              navCont.pop();
+                            }
+                          },
+                          icon: const Icon(Icons.image_outlined),
+                          label: const Text("Upload"),
                         ),
-                      );
-                    },
-                  ),
-                ),
-        ],
-      )),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade400),
+                          onPressed: () {
+                            _selectedFiles.clear();
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.delete),
+                          label: const Text("Clear"),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    _selectedFiles.isEmpty
+                        ? const Padding(
+                            padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                            child: Text("No images selected"),
+                          )
+                        : Expanded(
+                            child: GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3),
+                              itemCount: _selectedFiles.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                log(_selectedFiles.length.toString());
+                                return Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Image.file(
+                                    File(_selectedFiles[index].path),
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                  ],
+                )),
     );
   }
 
@@ -257,7 +274,30 @@ class _UserReportScreenState extends ConsumerState<UserReportScreen> {
     }
   }
 
+  Widget showLoading() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // ignore: prefer_interpolation_to_compose_strings
+          Text("Uploading : " +
+              uploadItem.toString() +
+              "/" +
+              _selectedFiles.length.toString()),
+          const SizedBox(
+            height: 30,
+          ),
+          const CircularProgressIndicator(color: Colors.deepPurple),
+        ],
+      ),
+    );
+  }
+
   Future<void> uploadFunction(List<XFile> images) async {
+    setState(() {
+      _isUploading = true;
+    });
+
     for (int i = 0; i < images.length; i++) {
       var url = await uploadFile(images[i]);
       if (url.isNotEmpty) {
@@ -277,7 +317,15 @@ class _UserReportScreenState extends ConsumerState<UserReportScreen> {
     });
     try {
       var res = await dio.post(url, data: data);
-      log(res.data.toString());
+      if (res.statusCode == 200) {
+        setState(() {
+          uploadItem++;
+          if (uploadItem == _selectedFiles.length) {
+            _isUploading = false;
+            uploadItem = 0;
+          }
+        });
+      }
       return res.data.toString();
     } catch (e) {
       log(e.toString());

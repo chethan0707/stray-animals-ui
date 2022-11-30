@@ -209,7 +209,8 @@ class AuthRepository {
               "state": "Karnataka",
               "zip": zip,
               "volunteers": [],
-              "coordinates": coordinates
+              "coordinates": coordinates,
+              "userReports": [],
             },
           ),
           headers: {'Content-type': 'application/json'});

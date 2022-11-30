@@ -1,3 +1,6 @@
+import 'package:stray_animals_ui/models/event_model.dart';
+import 'package:stray_animals_ui/models/report_model/user_report_model.dart';
+
 class NGO {
   NGO({
     required this.id,
@@ -19,7 +22,8 @@ class NGO {
   late final String role;
   late final Coordinates coordinates;
   late final List<String> volunteers;
-
+  late final List<UserReport> reports;
+  late final List<String> events;
   NGO.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     email = json['email'];
@@ -30,20 +34,26 @@ class NGO {
     role = json['role'];
     coordinates = Coordinates.fromJson(json['coordinates']);
     volunteers = List.castFrom<dynamic, String>(json['volunteers']);
+    reports = (json['userReports'] as List)
+        .map((e) => UserReport.fromJson(e))
+        .toList();
+    events = List.castFrom<dynamic, String>(json['events']);;
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['email'] = email;
-    _data['name'] = name;
-    _data['city'] = city;
-    _data['address'] = address.toJson();
-    _data['phone'] = phone;
-    _data['role'] = role;
-    _data['coordinates'] = coordinates.toJson();
-    _data['volunteers'] = volunteers;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['email'] = email;
+    data['name'] = name;
+    data['city'] = city;
+    data['address'] = address.toJson();
+    data['phone'] = phone;
+    data['role'] = role;
+    data['coordinates'] = coordinates.toJson();
+    data['volunteers'] = volunteers;
+    data['userReports'] = reports.map((e) => e.toJson()).toList();
+    data['events'] = events;
+    return data;
   }
 }
 
@@ -69,7 +79,7 @@ class Address {
 }
 
 class Coordinates {
-  Coordinates({               
+  Coordinates({
     required this.x,
     required this.y,
     required this.type,

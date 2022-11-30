@@ -33,7 +33,7 @@ class _NavBarState extends ConsumerState<NavBar> {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        // Remove padding
+      
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(

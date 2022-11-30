@@ -1,7 +1,10 @@
 import 'dart:convert' as convert;
+import 'dart:developer';
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stray_animals_ui/models/place_search.dart';
 import 'package:http/http.dart' as http;
+import 'package:stray_animals_ui/models/places_dto.dart';
 
 import '../models/place.dart';
 
@@ -24,6 +27,17 @@ class PlacesService {
     var json = convert.jsonDecode(response.body);
     var jsonResult = json['result'] as Map<String, dynamic>;
     return Place.fromJson(jsonResult);
+  }
+
+  Future<PlacesDTO> getPlaceByCoordinates(LatLng lalng) async {
+    var url =
+        "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mongolian&inputtype=textquery&locationbias=circle%3A2000%40${lalng.latitude}%2C${lalng.longitude}&fields=formatted_address%2Cname%2Crating%2Copening_hours%2Cgeometry&key=$key";
+    var response = await http.get(Uri.parse(url));
+    var json = convert.jsonDecode(response.body);
+    var jsonResult = json['candidates'] as List;
+    var jsonR = PlacesDTO.fromJson(jsonResult[0]);
+    
+    return PlacesDTO.fromJson(jsonResult[0]);
   }
 
   Future<List<Place>> getNearByPlaces(

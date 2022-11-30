@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:stray_animals_ui/screens/adoption_screens/adoption_screen.dart';
+import 'package:stray_animals_ui/screens/events_screen/events_screen.dart';
 import 'package:stray_animals_ui/screens/user_reports/user_report_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../components/map_utils.dart';
+import '../models/event_model.dart';
 import '../models/ngo_model.dart';
+import 'package:http/http.dart' as http;
 
 class NGODesc extends ConsumerStatefulWidget {
   final String userEmail;
@@ -142,35 +146,44 @@ class _NGODescState extends ConsumerState<NGODesc> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                margin: EdgeInsets.only(
-                    left: (MediaQuery.of(context).size.height / 25)),
-                height: MediaQuery.of(context).size.height / 6,
-                width: MediaQuery.of(context).size.height / 6,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10)),
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(
-                      Icons.event,
-                      color: Colors.deepPurple,
-                      size: 40,
-                    ),
-                    Text(
-                      'View events',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
+              InkWell(
+                onTap: () async {
+                  var navCont = Navigator.of(context);
+                  var events = await getItems();
+                  navCont.push(MaterialPageRoute(
+                    builder: (context) => EventsScreen(events: events),
+                  ));
+                },
+                child: Container(
+                  margin: EdgeInsets.only(
+                      left: (MediaQuery.of(context).size.height / 25)),
+                  height: MediaQuery.of(context).size.height / 6,
+                  width: MediaQuery.of(context).size.height / 6,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(7),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10)),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.event,
+                        color: Colors.deepPurple,
+                        size: 40,
+                      ),
+                      Text(
+                        'View events',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
                 ),
               ),
               InkWell(
@@ -218,8 +231,65 @@ class _NGODescState extends ConsumerState<NGODesc> {
               )
             ],
           ),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AdoptionScreen(),
+                  ));
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(7),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10)),
+                    ],
+                  ),
+                  margin: EdgeInsets.only(
+                      right: (MediaQuery.of(context).size.height / 25)),
+                  height: MediaQuery.of(context).size.height / 6,
+                  width: MediaQuery.of(context).size.height / 6,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.pets,
+                          color: Colors.deepPurple,
+                          size: 40,
+                        ),
+                        Text(
+                          'Adopt',
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        )
+                      ]),
+                ),
+              )
+            ],
+          )
         ],
       ),
     );
+  }
+
+  Future<List<Event>> getItems() async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/ngo/events").replace(
+        queryParameters: {"email": widget.ngo.email},
+      ),
+    );
+    var jsonBody = json.decode(response.body);
+    var items =
+        List<Event>.from(jsonBody.map((model) => Event.fromJson(model)));
+    return items;
   }
 }
