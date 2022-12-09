@@ -72,7 +72,6 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
         log(e.toString());
       }
     } else {
-      log("file not available");
       var im = await dio.get(
           "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
           options: Options(responseType: ResponseType.bytes));
@@ -82,7 +81,7 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
           filename: fileName,
         ),
       });
-
+      log(fileName);
       try {
         var res = await dio.post(url, data: data);
         log(res.data.toString());

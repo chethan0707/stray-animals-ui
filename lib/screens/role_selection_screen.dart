@@ -269,7 +269,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                           city.isEmpty ||
                           zipCode.isEmpty ||
                           phoneNumber.isEmpty)) {
-                    log("hello2");
+            
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Fill all fields"),

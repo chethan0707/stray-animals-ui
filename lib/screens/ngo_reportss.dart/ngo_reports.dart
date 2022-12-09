@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:stray_animals_ui/components/map_utils.dart';
 import 'package:stray_animals_ui/models/places_dto.dart';
-import 'package:stray_animals_ui/repositories/places_services.dart';
 import 'package:stray_animals_ui/screens/ngo_reportss.dart/carousel_view.dart';
 import '../../models/report_model/user_report_model.dart';
 
@@ -20,6 +19,10 @@ class _NGOReportState extends ConsumerState<NGOReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.done),
+      ),
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
@@ -48,7 +51,8 @@ class _NGOReportState extends ConsumerState<NGOReport> {
           ),
           Padding(
             padding: const EdgeInsets.all(15),
-            child: Text(widget.report.description),
+            child: Text(widget.report.description,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
           ),
           const SizedBox(
             height: 20,
@@ -59,18 +63,35 @@ class _NGOReportState extends ConsumerState<NGOReport> {
           const SizedBox(
             height: 30,
           ),
-          Text("Location: ${widget.place.formattedAddress}"),
+          Padding(
+            padding: const EdgeInsets.only(left: 25.0),
+            child: Text("Location: ${widget.place.formattedAddress}"),
+          ),
           const SizedBox(
             height: 20,
           ),
-          ElevatedButton.icon(
-              onPressed: () async {
-                PlacesService().getPlaceByCoordinates(LatLng(
-                    widget.report.coordinates[0],
-                    widget.report.coordinates[0]));
-              },
-              icon: const Icon(Icons.ac_unit_sharp),
-              label: const Text("click me"))
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple[400]),
+            onPressed: () async {
+              // PlacesService().getPlaceByCoordinates(LatLng(
+              //     widget.report.coordinates[0], widget.report.coordinates[0]));
+            },
+            child: const Text("Assign volunteer"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurple[400],
+            ),
+            onPressed: () async {
+              MapUtils.openMap(
+                  widget.report.coordinates[0], widget.report.coordinates[1]);
+            },
+            child: Text(
+              "Get directions from google maps",
+              style: GoogleFonts.aldrich(),
+            ),
+          )
         ],
       ),
     );

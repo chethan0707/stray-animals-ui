@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:provider/provider.dart' as p;
-import 'package:stray_animals_ui/screens/nearest_pet_store.dart';
-import 'package:stray_animals_ui/screens/user_reports/user_report_screen.dart';
 
 import 'blocs/application_bloc.dart';
 
@@ -26,12 +24,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return p.ChangeNotifierProvider(
       create: (context) => ApplicationBloc(),
-      child: const MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
         // home: UserReportScreen(
         //     userEmail: "s@gmail.com", ngoEmail: "koderktngo@gmail.com"),
-        home: LoginScreen(),
+        home: const LoginScreen(),
+        theme: ThemeData(primarySwatch: Colors.deepPurple),
       ),
     );
   }

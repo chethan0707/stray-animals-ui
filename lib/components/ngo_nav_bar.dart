@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stray_animals_ui/models/user.dart' as u;
+import 'package:stray_animals_ui/screens/events_screen/ngo_events_main_screen.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
-import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
-
+import 'package:http/http.dart' as http;
+import '../models/event_model.dart';
 import '../models/ngo_model.dart';
 
 class NavBar extends StatelessWidget {
@@ -48,16 +50,27 @@ class NavBar extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.event),
             title: const Text('Events'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.favorite),
-            title: const Text('Favorites'),
-            onTap: () {},
+            onTap: () async {
+              var navContext = Navigator.of(context);
+              var items = await getItems();
+              navContext.push(
+                MaterialPageRoute(
+                  builder: (context) => NGOEventMainScreen(
+                    ngoEmail: ngo.email,
+                    events: items,
+                  ),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.group),
             title: const Text('Volunteers'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('Reports'),
             onTap: () {},
           ),
           ListTile(
@@ -92,5 +105,17 @@ class NavBar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<List<Event>> getItems() async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/ngo/events").replace(
+        queryParameters: {"email": ngo.email},
+      ),
+    );
+    var jsonBody = json.decode(response.body);
+    var items =
+        List<Event>.from(jsonBody.map((model) => Event.fromJson(model)));
+    return items;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -127,7 +129,10 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                         return Padding(
                           padding: const EdgeInsets.all(15),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              // Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserEv,))
+                              log("Hello");
+                            },
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius:
