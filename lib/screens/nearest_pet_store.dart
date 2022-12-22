@@ -37,7 +37,10 @@ class _NearestPetClinicsState extends ConsumerState<NearestPetClinics> {
 
     boundSubscription = applicationBloc.bounds.stream.listen((bounds) async {
       final GoogleMapController controller = await _mapController.future;
-      controller.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50.0));
+      controller.animateCamera(CameraUpdate.newLatLngBounds(
+        bounds,
+        50.0,
+      ));
     });
     super.initState();
   }
@@ -66,21 +69,21 @@ class _NearestPetClinicsState extends ConsumerState<NearestPetClinics> {
                 child: Row(
                   children: [
                     Padding(
-                        padding: const EdgeInsets.all(14.0),
-                        child: GestureDetector(
-                          child: const Icon(
-                            Icons.arrow_back_ios,
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    UserHome(user: widget.user),
-                              ),
-                            );
-                          },
-                        ),),
+                      padding: const EdgeInsets.all(14.0),
+                      child: GestureDetector(
+                        child: const Icon(
+                          Icons.arrow_back_ios,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserHome(user: widget.user),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                     const SizedBox(
                       width: 20,
                     ),

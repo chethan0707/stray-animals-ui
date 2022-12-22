@@ -14,6 +14,7 @@ class UserHome extends ConsumerStatefulWidget {
   final u.User user;
   const UserHome({required this.user, super.key});
 
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _UserHomeState();
 }
@@ -83,7 +84,7 @@ class _UserHomeState extends ConsumerState<UserHome> {
                                 title: Text(
                                   ngos[index].name,
                                   style: GoogleFonts.aldrich(
-                                      fontSize: 16, color: Colors.black),
+                                      fontSize: 16, color: Colors.black87),
                                 ),
                               ),
                               ListTile(

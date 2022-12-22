@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:stray_animals_ui/models/user.dart' as user;
+import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:stray_animals_ui/repositories/local_storage_repository.dart';
 
 import '../models/ngo_model.dart';
@@ -57,6 +58,24 @@ class AuthRepository {
     }
   }
 
+  Future<bool> doesVolunteerExist(String email) async {
+    String url = "http://localhost:8080/api/volunteer/get?email=$email";
+
+    try {
+      var res = await _client.get(Uri.parse(url));
+      var result;
+      if (res.body.isNotEmpty) {
+        result = json.decode(res.body);
+      }
+      if (result == null) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return true;
+    }
+  }
+
   Future<bool> doesNGOExist(String email) async {
     String url = "http://localhost:8080/api/ngo/get?email=$email";
 
@@ -72,6 +91,25 @@ class AuthRepository {
       return true;
     } catch (e) {
       return true;
+    }
+  }
+
+  Future<Volunteer?> getVolunteerFromDB(String email) async {
+    String url = "http://localhost:8080/api/volunteer/get?email=$email";
+    try {
+      var res = await _client.get(Uri.parse(url));
+      log(res.statusCode.toString());
+      var result;
+      result = json.decode(res.body);
+      if (result == null) {
+        return null;
+      }
+      log(result.toString());
+      var newVolunteer = Volunteer.fromJson(result);
+      return newVolunteer;
+    } catch (e) {
+      log(e.toString());
+      return null;
     }
   }
 
@@ -114,6 +152,7 @@ class AuthRepository {
   Future<String> getUserRole(String email) async {
     String url = "http://localhost:8080/api/user/get?email=$email";
     String url2 = "http://localhost:8080/api/ngo/get?email=$email";
+    String url3 = "http://localhost:8080/api/volunteer/get?email=$email";
     try {
       log(email);
       var res = await _client.get(Uri.parse(url));
@@ -127,17 +166,27 @@ class AuthRepository {
         var newUser = user.User.fromJson(result);
         return newUser.role!;
       }
-      log("2nd url");
       var response = await _client.get(Uri.parse(url2));
 
       if (response.body.isNotEmpty) {
         result = json.decode(response.body);
         log(result.toString());
       }
-
+      log("checking for ngo ");
       if (result != null) {
         var newNGO = NGO.fromJson(result);
         return newNGO.role;
+      }
+
+      log("checking for volunteer");
+      var response2 = await _client.get(Uri.parse(url3));
+      if (response2.body.isNotEmpty) {
+        result = json.decode(response2.body);
+        log(result.toString());
+      }
+      if (result != null) {
+        var newVolunteer = Volunteer.fromJson(result);
+        return newVolunteer.role!;
       }
       return "";
     } catch (e) {
@@ -154,6 +203,40 @@ class AuthRepository {
       return getUser();
     } on FirebaseAuthException catch (e) {
       log(e.message.toString());
+    }
+    return null;
+  }
+
+  Future<User?> createVolunteer(
+    String email,
+    String phone,
+    String city,
+    String userName,
+    String password
+  ) async {
+    try {
+      log("Create volunteer");
+      var url = "http://localhost:8080/api/volunteer/create";
+      var res = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      var b = jsonEncode({
+        "id": null,
+        "userName": userName,
+        "phone": phone,
+        "role": "Volunteer",
+        "email": email,
+        "resueCount": 0,
+        "profileUrl": email,
+        "city": city,
+        "ngos": []
+      });
+      if (res.user != null) {
+        var response = _client.post(Uri.parse(url),
+            body: b, headers: {'Content-type': 'application/json'});
+        return res.user;
+      }
+    } catch (e) {
+      log(e.toString());
     }
     return null;
   }
@@ -183,6 +266,7 @@ class AuthRepository {
     } catch (e) {
       log(e.toString());
     }
+    return null;
   }
 
   Future<User?> createNGO(

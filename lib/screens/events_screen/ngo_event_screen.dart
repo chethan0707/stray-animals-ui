@@ -33,7 +33,7 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
       appBar: AppBar(
         title: Text(
           widget.event.eventName,
-          style: GoogleFonts.aldrich(letterSpacing: 2),
+          style: GoogleFonts.aldrich(letterSpacing: 2,),
         ),
         actions: const [
           Padding(

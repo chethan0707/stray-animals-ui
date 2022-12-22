@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/models/user.dart' as u;
-import 'package:stray_animals_ui/repositories/auth_repository.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:stray_animals_ui/screens/nearest_pet_store.dart';
 import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
@@ -21,6 +20,7 @@ class _NavBarState extends ConsumerState<NavBar> {
   @override
   void initState() {
     // getImageUrl(widget.user.email);
+    // ref.read(applicationBlocController).
     super.initState();
   }
 
@@ -33,7 +33,6 @@ class _NavBarState extends ConsumerState<NavBar> {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-      
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(

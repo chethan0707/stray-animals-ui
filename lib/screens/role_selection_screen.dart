@@ -27,6 +27,14 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   final TextEditingController _zipController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+
+  final TextEditingController _vPhController = TextEditingController();
+  final TextEditingController _vuNameController = TextEditingController();
+  final TextEditingController _vCityController = TextEditingController();
+  late String vUname = "";
+  late String vPhNo = "";
+  late String vCity = "";
+
   late String userName = "";
   late String ngoName = "";
   late String city = "";
@@ -36,6 +44,15 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   bool isProfileImageSet = false;
   @override
   void initState() {
+    _vCityController.addListener(() {
+      vCity = _vCityController.text;
+    });
+    _vuNameController.addListener(() {
+      vUname = _vuNameController.text;
+    });
+    _vPhController.addListener(() {
+      vPhNo = _vPhController.text;
+    });
     _usernameController.addListener(() {
       userName = _usernameController.text;
     });
@@ -59,6 +76,9 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
 
   @override
   void dispose() {
+    _vCityController.dispose();
+    _vuNameController.dispose();
+    _vPhController.dispose();
     _usernameController.dispose();
     _cityController.dispose();
     _ngoNameController.dispose();
@@ -90,6 +110,10 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
     return await ref.read(authRepositoryProvider).doesNGOExist(email);
   }
 
+  Future<bool> doesVolunteerExist(String email) async {
+    return await ref.read(authRepositoryProvider).doesVolunteerExist(email);
+  }
+
   Future<void> signUpUser(String email, String password, String userName,
       String role, String phone) async {
     await ref.read(authRepositoryProvider).createUser(
@@ -98,6 +122,17 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
           role,
           phone,
           userName,
+        );
+  }
+
+  Future<void> signUpVolunteer(String email, String password, String userName,
+      String role, String phone, String city) async {
+    await ref.read(authRepositoryProvider).createVolunteer(
+          email,
+          phone,
+          city,
+          userName,
+          password,
         );
   }
 
@@ -125,7 +160,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
       ),
       backgroundColor: Colors.grey[300],
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             const SizedBox(
@@ -269,7 +304,6 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                           city.isEmpty ||
                           zipCode.isEmpty ||
                           phoneNumber.isEmpty)) {
-            
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Fill all fields"),
@@ -319,6 +353,29 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                           phoneNumber,
                           zipCode,
                           coordinates);
+                      navContext.push(MaterialPageRoute(
+                          builder: (navContext) => const LoginScreen()));
+                    }
+                  } else if (_currentItemSelected == "Volunteer") {
+                    var navContext = Navigator.of(context);
+                    var scMessanger = ScaffoldMessenger.of(context);
+
+                    var flag = await doesVolunteerExist(widget.email);
+                    if (flag == true) {
+                      scMessanger.showSnackBar(
+                        const SnackBar(
+                          content: Text("Email already registered"),
+                        ),
+                      );
+                    } else {
+                      await signUpVolunteer(
+                        widget.email,
+                        widget.password,
+                        vUname,
+                        _currentItemSelected,
+                        phoneNumber,
+                        vCity,
+                      );
                       navContext.push(MaterialPageRoute(
                           builder: (navContext) => const LoginScreen()));
                     }
@@ -484,7 +541,55 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
         );
       case "Volunteer":
         return Column(
-          children: [Container()],
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: [
+                  Text("Enter Username",
+                      style: GoogleFonts.aldrich(fontSize: 20)),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            buildTextFiled(_vuNameController, 'Username'),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: [
+                  Text("Enter Phone number",
+                      style: GoogleFonts.aldrich(fontSize: 20)),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            buildTextFiled(_vPhController, 'Phone number'),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Row(
+                children: [
+                  Text("Enter City", style: GoogleFonts.aldrich(fontSize: 20)),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            buildTextFiled(_vCityController, "City"),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
         );
     }
     return Column();

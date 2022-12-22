@@ -6,9 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/models/user.dart' as user;
+import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:stray_animals_ui/screens/ngo_home_screen.dart';
 import 'package:stray_animals_ui/screens/register_screen.dart';
 import 'package:stray_animals_ui/screens/user_home.dart';
+import 'package:stray_animals_ui/screens/user_reports/volunteer_home.dart';
 
 import '../components/error_dialouge.dart';
 import '../models/ngo_model.dart';
@@ -37,6 +39,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<Volunteer?> getVolunteer(String email) async {
+    Volunteer? us =
+        await ref.read(authRepositoryProvider).getVolunteerFromDB(email);
+    log("in volunteer login func");
+    if (us != null) {
+      return us;
+    } else {
+      return null;
+    }
+  }
+
   Future<NGO?> getNGO(String email) async {
     NGO? us = await ref.read(authRepositoryProvider).getNGOFromDB(email);
     if (us != null) {
@@ -47,7 +60,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<String> getUserRole(String email) async {
+    log("Hello World");
     String resRole = await ref.read(authRepositoryProvider).getUserRole(email);
+    log("role is $resRole");
     return resRole;
   }
 
@@ -166,12 +181,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   final firebaseUser = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: email, password: password);
+                  
                   var us = await getUserRole(email);
                   if (us != null) {
                     log(us);
                     if (us == "User") {
                       var use = await getUser(email);
-                      
+
                       navContext.pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => UserHome(
@@ -185,6 +201,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         MaterialPageRoute(
                             builder: (context) => NGOHome(
                                   ngo: ngo!,
+                                )),
+                        (route) => false,
+                      );
+                    } else if (us == "Volunteer") {
+                      var vol = await getVolunteer(email);
+                      navContext.pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => VolunteerHome(
+                                  vol: vol!,
                                 )),
                         (route) => false,
                       );
