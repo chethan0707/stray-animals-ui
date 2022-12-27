@@ -1,18 +1,20 @@
-import 'package:stray_animals_ui/models/ngo_model.dart';
-
 class Volunteer {
+  List<String>? reports;
   String? role;
   String? id;
+  bool? status;
   String? userName;
   String? email;
   String? phone;
   int? rescueCount;
   String? city;
-  List<NGO>? ngos;
+  String? ngos;
   String? profileUrl;
 
   Volunteer(
       {this.profileUrl,
+      this.reports,
+      this.status,
       this.role,
       this.id,
       this.userName,
@@ -23,26 +25,24 @@ class Volunteer {
       this.ngos});
 
   Volunteer.fromJson(Map<String, dynamic> json) {
+    reports = List.castFrom<dynamic, String>(json['reports']);
     profileUrl = json['profileUrl'];
     id = json['id'];
     role = json['role'];
+    status = json['status'];
     userName = json['userName'];
     email = json['email'];
     phone = json['phone'];
     rescueCount = json['rescueCount'];
     city = json['city'];
-    if (json['ngos'] != null) {
-      ngos = <NGO>[];
-      json['ngos'].forEach((v) {
-        ngos!.add(NGO.fromJson(v));
-      });
-    }
+    ngos = json['ngos'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['profileUrl'] = profileUrl;
     data['id'] = id;
+    data['reports'] = reports;
     data['role'] = role;
     data['userName'] = userName;
     data['email'] = email;
@@ -50,7 +50,7 @@ class Volunteer {
     data['rescueCount'] = rescueCount;
     data['city'] = city;
     if (ngos != null) {
-      data['ngos'] = ngos!.map((v) => v.toJson()).toList();
+      data['ngos'] = ngos;
     }
     return data;
   }

@@ -10,7 +10,7 @@ import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:stray_animals_ui/screens/ngo_home_screen.dart';
 import 'package:stray_animals_ui/screens/register_screen.dart';
 import 'package:stray_animals_ui/screens/user_home.dart';
-import 'package:stray_animals_ui/screens/user_reports/volunteer_home.dart';
+import 'package:stray_animals_ui/screens/volunteer_home.dart';
 
 import '../components/error_dialouge.dart';
 import '../models/ngo_model.dart';

@@ -7,26 +7,62 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/components/map_utils.dart';
 import 'package:stray_animals_ui/models/places_dto.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
-import 'package:stray_animals_ui/screens/ngo_reportss.dart/assign_volunteer.dart';
 import 'package:stray_animals_ui/screens/ngo_reportss.dart/carousel_view.dart';
 import '../../models/report_model/user_report_model.dart';
 import 'package:http/http.dart' as http;
 
-class NGOReport extends ConsumerStatefulWidget {
+class VolunteerReport extends ConsumerStatefulWidget {
   final UserReport report;
+  final String email;
   final PlacesDTO place;
-  const NGOReport({required this.place, required this.report, super.key});
+  const VolunteerReport({required this.email, required  this.place, required this.report, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NGOReportState();
 }
 
-class _NGOReportState extends ConsumerState<NGOReport> {
+class _NGOReportState extends ConsumerState<VolunteerReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title:
+                    const Text("Are you sure you want to close this report?"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      var navCon = Navigator.of(context);
+                      final response = await http.post(
+                        Uri.parse(
+                                "http://localhost:8080/api/volunteer/report/close")
+                            .replace(queryParameters: {
+                          "id": widget.report.caseId,
+                          "volID": widget.email,
+                        }),
+                      );
+                      if (response.statusCode == 200) {
+                        navCon.pop();
+                        navCon.pop();
+                      }
+                    },
+                    child: const Text("Yes"),
+                  ),
+                ],
+              );
+            },
+          );
+        },
         child: const Icon(Icons.done),
       ),
       appBar: AppBar(
@@ -75,21 +111,6 @@ class _NGOReportState extends ConsumerState<NGOReport> {
           ),
           const SizedBox(
             height: 20,
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple[400]),
-            onPressed: () async {
-              var navCon = Navigator.of(context);
-              var vol = await getVolunteers(widget.report.ngoId);
-              navCon.push(MaterialPageRoute(
-                builder: (context) => AssignVolunteerScreen(
-                  reportId: widget.report.caseId,
-                  volunteers: vol,
-                ),
-              ));
-            },
-            child: const Text("Assign volunteer"),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(

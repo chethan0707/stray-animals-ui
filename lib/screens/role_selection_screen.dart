@@ -373,7 +373,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                         widget.password,
                         vUname,
                         _currentItemSelected,
-                        phoneNumber,
+                        vPhNo,
                         vCity,
                       );
                       navContext.push(MaterialPageRoute(

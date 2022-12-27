@@ -71,10 +71,12 @@ class NGOEventScreenState extends ConsumerState<NGOEventMainScreen> {
               ],
             ),
             Expanded(
-              child: TabBarView(children: [
-                AllEventsScreen(events: upcoming),
-                AllEventsScreen(events: recent)
-              ]),
+              child: TabBarView(
+                children: [
+                  AllEventsScreen(events: upcoming),
+                  AllEventsScreen(events: recent)
+                ],
+              ),
             )
           ],
         ),

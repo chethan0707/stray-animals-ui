@@ -207,13 +207,8 @@ class AuthRepository {
     return null;
   }
 
-  Future<User?> createVolunteer(
-    String email,
-    String phone,
-    String city,
-    String userName,
-    String password
-  ) async {
+  Future<User?> createVolunteer(String email, String phone, String city,
+      String userName, String password) async {
     try {
       log("Create volunteer");
       var url = "http://localhost:8080/api/volunteer/create";
@@ -227,6 +222,7 @@ class AuthRepository {
         "email": email,
         "resueCount": 0,
         "profileUrl": email,
+        "reports": [],
         "city": city,
         "ngos": []
       });

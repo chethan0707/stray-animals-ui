@@ -40,82 +40,90 @@ class _NGOHomeState extends ConsumerState<NGOHome> {
           ),
         ),
       ),
-      body: FutureBuilder(
-        future: getItems(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              if (items.isEmpty) {
-                return const Center(child: Text('No active reports found'));
-              } else {
-                return ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    return items[index].status == false
-                        ? Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: InkWell(
-                              onTap: () async {
-                                var navCont = Navigator.of(context);
-                                var place = await PlacesService()
-                                    .getPlaceByCoordinates(LatLng(
-                                        items[index].coordinates[0],
-                                        items[index].coordinates[1]));
-                                navCont.push(
-                                  MaterialPageRoute(
-                                    builder: (context) => NGOReport(
-                                        place: place, report: items[index]),
+      body: RefreshIndicator(
+        onRefresh: () {
+          setState(() {});
+          return Future.value();
+        },
+        child: FutureBuilder(
+          future: getItems(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                if (items.isEmpty) {
+                  return const Center(child: Text('No active reports found'));
+                } else {
+                  return ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      return items[index].status == false
+                          ? Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: InkWell(
+                                onTap: () async {
+                                  var navCont = Navigator.of(context);
+                                  var place = await PlacesService()
+                                      .getPlaceByCoordinates(LatLng(
+                                          items[index].coordinates[0],
+                                          items[index].coordinates[1]));
+                                  navCont.push(
+                                    MaterialPageRoute(
+                                      builder: (context) => NGOReport(
+                                          place: place, report: items[index]),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5)),
+                                    color: Colors.deepPurple[200],
                                   ),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(5)),
-                                  color: Colors.deepPurple[200],
-                                ),
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                      title: Text(
-                                        items[index].userId,
-                                        style: GoogleFonts.aldrich(
-                                            fontSize: 16, color: Colors.black),
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          items[index].userId,
+                                          style: GoogleFonts.aldrich(
+                                              fontSize: 16,
+                                              color: Colors.black),
+                                        ),
+                                        subtitle: items[index].status == false
+                                            ? const Text(
+                                                "Status: Active",
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              )
+                                            : const Text("Status: Rescued"),
                                       ),
-                                      subtitle: items[index].status == false
-                                          ? const Text(
-                                              "Status: Active",
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                            )
-                                          : const Text("Status: Rescued"),
-                                    ),
-                                    ListTile(
-                                      title: Text(
-                                        items[index].description,
-                                        style: GoogleFonts.aldrich(
-                                            fontSize: 16, color: Colors.black),
+                                      ListTile(
+                                        title: Text(
+                                          items[index].description,
+                                          style: GoogleFonts.aldrich(
+                                              fontSize: 16,
+                                              color: Colors.black),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                        : const SizedBox(
-                            height: 0,
-                          );
-                  },
+                            )
+                          : const SizedBox(
+                              height: 0,
+                            );
+                    },
+                  );
+                }
+              default:
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.deepPurple,
+                  ),
                 );
-              }
-            default:
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.deepPurple,
-                ),
-              );
-          }
-        },
+            }
+          },
+        ),
       ),
     );
   }
