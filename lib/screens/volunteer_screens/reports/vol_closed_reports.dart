@@ -4,31 +4,32 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stray_animals_ui/components/map_utils.dart';
 import 'package:stray_animals_ui/models/places_dto.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
-import 'package:stray_animals_ui/screens/ngo_reportss.dart/assign_volunteer.dart';
-import 'package:stray_animals_ui/screens/ngo_reportss.dart/carousel_view.dart';
-import '../../models/report_model/user_report_model.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/reports/carousel_view.dart';
+import '../../../models/report_model/user_report_model.dart';
 import 'package:http/http.dart' as http;
 
-class NGOReport extends ConsumerStatefulWidget {
+class VolunteerClosedReport extends ConsumerStatefulWidget {
+  final String uName;
   final UserReport report;
+  final String email;
   final PlacesDTO place;
-  const NGOReport({required this.place, required this.report, super.key});
+  const VolunteerClosedReport(
+      {required this.uName,
+      required this.email,
+      required this.place,
+      required this.report,
+      super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NGOReportState();
 }
 
-class _NGOReportState extends ConsumerState<NGOReport> {
+class _NGOReportState extends ConsumerState<VolunteerClosedReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.done),
-      ),
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
@@ -76,34 +77,20 @@ class _NGOReportState extends ConsumerState<NGOReport> {
           const SizedBox(
             height: 20,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple[400]),
-            onPressed: () async {
-              var navCon = Navigator.of(context);
-              var vol = await getVolunteers(widget.report.ngoId);
-              navCon.push(MaterialPageRoute(
-                builder: (context) => AssignVolunteerScreen(
-                  reportId: widget.report.caseId,
-                  volunteers: vol,
-                ),
-              ));
-            },
-            child: const Text("Assign volunteer"),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepPurple[400],
-            ),
-            onPressed: () async {
-              MapUtils.openMap(
-                  widget.report.coordinates[0], widget.report.coordinates[1]);
-            },
-            child: Text(
-              "Get directions from google maps",
-              style: GoogleFonts.aldrich(),
-            ),
-          )
+          // ElevatedButton(
+          //   style: ElevatedButton.styleFrom(
+          //     backgroundColor: Colors.deepPurple[400],
+          //   ),
+          //   onPressed: () async {
+          //     MapUtils.openMap(
+          //         widget.report.coordinates[0], widget.report.coordinates[1]);
+          //   },
+          //   child: Text(
+          //     "Get directions from google maps",
+          //     style: GoogleFonts.aldrich(),
+          //   ),
+          // )
+          Text("Animal rescued by: ${widget.uName}"),
         ],
       ),
     );

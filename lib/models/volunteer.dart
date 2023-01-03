@@ -10,9 +10,10 @@ class Volunteer {
   String? city;
   String? ngos;
   String? profileUrl;
-
+  List<String>? events;
   Volunteer(
-      {this.profileUrl,
+      {this.events,
+      this.profileUrl,
       this.reports,
       this.status,
       this.role,
@@ -26,6 +27,7 @@ class Volunteer {
 
   Volunteer.fromJson(Map<String, dynamic> json) {
     reports = List.castFrom<dynamic, String>(json['reports']);
+    events = List.castFrom<dynamic, String>(json['events']);
     profileUrl = json['profileUrl'];
     id = json['id'];
     role = json['role'];
@@ -42,6 +44,8 @@ class Volunteer {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['profileUrl'] = profileUrl;
     data['id'] = id;
+    data['status'] = status;
+    data['events'] = events;
     data['reports'] = reports;
     data['role'] = role;
     data['userName'] = userName;

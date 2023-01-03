@@ -1,19 +1,28 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/components/map_utils.dart';
 import 'package:stray_animals_ui/components/photo_view_component.dart';
 import 'package:stray_animals_ui/models/places_dto.dart';
-
-import '../../models/event_model.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_event_edit.dart';
+import 'package:http/http.dart' as http;
+import '../../../models/event_model.dart';
 
 class NGOEventScreen extends ConsumerStatefulWidget {
+  final String ngoEmail;
   final Event event;
   final PlacesDTO place;
-  const NGOEventScreen({required this.event, required this.place, super.key});
+  const NGOEventScreen(
+      {required this.ngoEmail,
+      required this.event,
+      required this.place,
+      super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NGOEventScreenState();
@@ -33,14 +42,10 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
       appBar: AppBar(
         title: Text(
           widget.event.eventName,
-          style: GoogleFonts.aldrich(letterSpacing: 2,),
+          style: GoogleFonts.aldrich(
+            letterSpacing: 2,
+          ),
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.edit),
-          )
-        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,21 +79,24 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
             ),
           ),
           Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "Description",
-                style: GoogleFonts.aBeeZee(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: Colors.indigo),
-              )),
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Description",
+              style: GoogleFonts.aBeeZee(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  color: Colors.indigo),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 16.0, top: 4),
             child: Row(
               children: [
-                Text(
-                  widget.event.description,
-                  style: GoogleFonts.aldrich(fontSize: 18),
+                Expanded(
+                  child: Text(
+                    widget.event.description,
+                    style: GoogleFonts.aldrich(fontSize: 18),
+                  ),
                 ),
               ],
             ),
@@ -151,11 +159,49 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
                 ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            locationDialougue(context);
-          },
-          child: const Icon(Icons.location_on)),
+      // floatingActionButton: FloatingActionButton(
+      //     onPressed: () {
+      //       locationDialougue(context);
+      //     },
+      //     child: const Icon(Icons.location_on)),
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: ExpandableFab(
+        distance: 75,
+        type: ExpandableFabType.up,
+        children: [
+          FloatingActionButton.small(
+            heroTag: "btn3",
+            child: const Icon(Icons.location_on),
+            onPressed: () {
+              locationDialougue(context);
+            },
+          ),
+          widget.event.status == false
+              ? FloatingActionButton.small(
+                  heroTag: "btn1",
+                  child: const Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => EditEvent(
+                        event: widget.event,
+                        ngoEmail: widget.ngoEmail,
+                      ),
+                    ));
+                  },
+                )
+              : Container(),
+          widget.event.status == false
+              ? FloatingActionButton.small(
+                  heroTag: "btn2",
+                  child: const Icon(Icons.done),
+                  onPressed: () {
+                    addEvent(ScaffoldMessenger.of(context));
+                    Navigator.of(context).pop();
+                  },
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 
@@ -171,13 +217,61 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
           ),
         ),
       ),
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       btnOkText: "Open in maps",
       btnOkOnPress: () {
         MapUtils.openMap(
             widget.event.coordinates[0], widget.event.coordinates[1]);
       },
     )..show();
-    ;
+  }
+
+  Future<bool> addEvent(ScaffoldMessengerState context) async {
+    // var coordinates = await getCoOrdinates();
+    // var b = jsonEncode();
+
+    var url = "http://localhost:8080/api/ngo/event/update";
+    var client = http.Client();
+    try {
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode({
+            "event": {
+              "eventId": widget.event.eventId,
+              "description": widget.event.description,
+              "eventName": widget.event.eventName,
+              "date": widget.event.date,
+              "time": widget.event.time,
+              "coordinates": [12.34, 76.678],
+              "images": widget.event.images,
+              "status": true,
+              "volunteersRequiredCount": widget.event.volunteersRequiredCount,
+              "volunteers": widget.event.volunteers
+            },
+            "ngoEmail": widget.ngoEmail
+          }),
+          headers: {'Content-type': 'application/json'});
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        context.showSnackBar(
+          SnackBar(
+            content: Text(
+              response.body.toString(),
+            ),
+          ),
+        );
+        return false;
+      }
+    } catch (e) {
+      context.showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
+      log(e.toString());
+      return false;
+    }
   }
 }

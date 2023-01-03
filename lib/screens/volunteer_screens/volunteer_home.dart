@@ -5,12 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:stray_animals_ui/blocs/application_bloc.dart';
 import 'package:stray_animals_ui/components/volunteer_navbar.dart';
+import 'package:stray_animals_ui/models/ngo_model.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:http/http.dart' as http;
-import 'package:stray_animals_ui/screens/vol_reports/vol_report_screen.dart';
-import '../models/report_model/user_report_model.dart';
-import '../repositories/places_services.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/events/join_ngo.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/reports/vol_closed_reports.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/reports/vol_report_screen.dart';
+import '../../models/report_model/user_report_model.dart';
+import '../../repositories/places_services.dart';
+// import 'package:provider/provider.dart' as p;
 
 class VolunteerHome extends ConsumerStatefulWidget {
   final Volunteer vol;
@@ -27,6 +32,8 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
   List<UserReport> open = [];
   @override
   void initState() {
+    // final application = p.Provider.of<ApplicationBloc>(context);
+    // application.setCurrentPosition();
     items = [];
     closed = [];
     open = [];
@@ -40,6 +47,7 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
       length: 2,
       child: Scaffold(
         drawer: VolunteerNavBar(
+          vol: widget.vol,
           context: context,
         ),
         appBar: AppBar(
@@ -122,11 +130,10 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
         },
       ),
     );
-    log(response.body);
   }
 
   Future<List<UserReport>> getOpenItems() async {
-    log("hello");
+    open.clear();
     final response = await http.get(
       Uri.parse("http://localhost:8080/api/volunteer/reports").replace(
         queryParameters: {
@@ -135,10 +142,8 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
       ),
     );
     var jsonBody = json.decode(response.body);
-    log(jsonBody.toString());
     items = List<UserReport>.from(
         jsonBody.map((model) => UserReport.fromJson(model)));
-    log(items.length.toString());
     for (var i in items) {
       if (i.status == true) {
         continue;
@@ -150,6 +155,7 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
   }
 
   Future<List<UserReport>> getClosedItems() async {
+    closed.clear();
     final response = await http.get(
       Uri.parse("http://localhost:8080/api/volunteer/reports").replace(
         queryParameters: {
@@ -158,10 +164,8 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
       ),
     );
     var jsonBody = json.decode(response.body);
-    log(jsonBody.toString());
     items = List<UserReport>.from(
         jsonBody.map((model) => UserReport.fromJson(model)));
-    log(items.length.toString());
     for (var i in items) {
       if (i.status == true) {
         closed.add(i);
@@ -172,9 +176,18 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
 
   Widget buildTabScreen1() {
     return widget.vol.ngos!.isEmpty
-        ? (const Center(
-            child: Text(
-              "Hello volunteer",
+        ? (Center(
+            child: ElevatedButton(
+              onPressed: () async {
+                var navCon = Navigator.of(context);
+                var ngos = await getNGOs();
+
+                navCon.push(MaterialPageRoute(
+                  builder: (context) =>
+                      JoinNGO(ngos: ngos, volunteer: widget.vol),
+                ));
+              },
+              child: Text('Join NGO'),
             ),
           ))
         : RefreshIndicator(
@@ -223,6 +236,7 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
                                           builder: (context) => VolunteerReport(
                                               email: widget.vol.email!,
                                               place: place,
+                                              ngoEmail: widget.vol.ngos!,
                                               report: open[index]),
                                         ),
                                       );
@@ -332,10 +346,12 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
                                               closed[index].coordinates[1]));
                                       navCont.push(
                                         MaterialPageRoute(
-                                          builder: (context) => VolunteerReport(
-                                              email: widget.vol.email!,
-                                              place: place,
-                                              report: closed[index]),
+                                          builder: (context) =>
+                                              VolunteerClosedReport(
+                                                  uName: widget.vol.userName!,
+                                                  email: widget.vol.email!,
+                                                  place: place,
+                                                  report: closed[index]),
                                         ),
                                       );
                                     },
@@ -392,5 +408,17 @@ class _VolunteerHomeState extends ConsumerState<VolunteerHome> {
               },
             ),
           );
+  }
+
+  Future<List<NGO>> getNGOs() async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/ngos").replace(
+          // queryParameters: {"email": FirebaseAuth.instance.currentUser!.email},
+          ),
+    );
+    var jsonBody = json.decode(response.body);
+    log(jsonBody.toString());
+    var ngos = List<NGO>.from(jsonBody.map((model) => NGO.fromJson(model)));
+    return ngos;
   }
 }

@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import '../../models/volunteer.dart';
+import '../../../models/volunteer.dart';
 
 class AssignVolunteerScreen extends ConsumerStatefulWidget {
   final List<Volunteer> volunteers;
@@ -89,7 +89,7 @@ class _AssignVolunteerScreenState extends ConsumerState<AssignVolunteerScreen> {
                                 },
                                 child: const Text('Cancel')),
                             TextButton(
-                              onPressed: () async {
+                              onPressed: () {
                                 assignVolunteer(
                                   availableVolunteers[selectedIndex].email!,
                                   widget.reportId,
@@ -113,45 +113,6 @@ class _AssignVolunteerScreenState extends ConsumerState<AssignVolunteerScreen> {
   }
 
   void showCustomDialog(BuildContext context) {
-    // showGeneralDialog(
-    //   context: context,
-    //   barrierLabel: "Barrier",
-    //   barrierDismissible: true,
-    //   barrierColor: Colors.black.withOpacity(0.5),
-    //   transitionDuration: const Duration(milliseconds: 700),
-    //   pageBuilder: (_, __, ___) {
-    //     return Center(
-    //       child: Container(
-    //         height: 400,
-    //         margin: const EdgeInsets.symmetric(horizontal: 20),
-    //         decoration: BoxDecoration(
-    //             color: Colors.white, borderRadius: BorderRadius.circular(40)),
-    //         child: Column(
-    //           children: [
-    //             Text(availableVolunteers[selectedIndex].userName ?? ""),
-    //           ],
-    //         ),
-    //       ),
-    //     );
-    //   },
-    //   transitionBuilder: (_, anim, __, child) {
-    //     Tween<Offset> tween;
-    //     if (anim.status == AnimationStatus.reverse) {
-    //       tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-    //     } else {
-    //       tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-    //     }
-
-    //     return SlideTransition(
-    //       position: tween.animate(anim),
-    //       child: FadeTransition(
-    //         opacity: anim,
-    //         child: child,
-    //       ),
-    //     );
-    //   },
-    // );
-
     showModalBottomSheet(
       elevation: 0,
       backgroundColor: Colors.transparent,

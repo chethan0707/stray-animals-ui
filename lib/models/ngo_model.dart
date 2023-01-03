@@ -1,4 +1,3 @@
-import 'package:stray_animals_ui/models/event_model.dart';
 import 'package:stray_animals_ui/models/report_model/user_report_model.dart';
 
 class NGO {
@@ -12,7 +11,9 @@ class NGO {
     required this.role,
     required this.coordinates,
     required this.volunteers,
+    required this.reports,
   });
+  late final int rescueCount;
   late final String id;
   late final String email;
   late final String name;
@@ -26,6 +27,7 @@ class NGO {
   late final List<String> events;
   NGO.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    rescueCount = json['rescueCount'];
     email = json['email'];
     name = json['name'];
     city = json['city'];
@@ -37,12 +39,14 @@ class NGO {
     reports = (json['userReports'] as List)
         .map((e) => UserReport.fromJson(e))
         .toList();
-    events = List.castFrom<dynamic, String>(json['events']);;
+    events = List.castFrom<dynamic, String>(json['events']);
+  
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
+    data['rescueCount'] = rescueCount;
     data['email'] = email;
     data['name'] = name;
     data['city'] = city;

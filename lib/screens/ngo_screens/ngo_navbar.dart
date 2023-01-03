@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stray_animals_ui/screens/events_screen/ngo_events_main_screen.dart';
+import 'package:stray_animals_ui/models/ngo_model.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_events_main_screen.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:http/http.dart' as http;
-import '../models/event_model.dart';
-import '../models/ngo_model.dart';
+import '../../models/event_model.dart';
 
 class NavBar extends StatelessWidget {
   final NGO ngo;

@@ -1,4 +1,5 @@
 class UserReport {
+  final String volunteer;
   final String caseId;
   final String userId;
   final List<double> coordinates;
@@ -7,6 +8,7 @@ class UserReport {
   final String ngoId;
   final String description;
   UserReport({
+    required this.volunteer,
     required this.description,
     required this.ngoId,
     required this.caseId,
@@ -17,6 +19,7 @@ class UserReport {
   });
 
   Map toJson() => {
+        'volunteer': volunteer,
         'description': description,
         'caseId': caseId,
         'userId': userId,
@@ -28,6 +31,7 @@ class UserReport {
 
   factory UserReport.fromJson(Map<String, dynamic> json) {
     return UserReport(
+      volunteer: json['volunteer'],
       description: json['description'],
       ngoId: json['ngoId'],
       caseId: json['caseId'],

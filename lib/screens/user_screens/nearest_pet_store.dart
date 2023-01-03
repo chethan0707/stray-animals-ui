@@ -8,13 +8,13 @@ import 'package:provider/provider.dart' as p;
 import 'package:stray_animals_ui/blocs/application_bloc.dart';
 import 'package:stray_animals_ui/components/map_utils.dart';
 import 'package:stray_animals_ui/models/user.dart';
-import 'package:stray_animals_ui/screens/user_home.dart';
-import '../models/place.dart';
+import 'package:stray_animals_ui/screens/user_screens/user_home.dart';
+import '../../models/place.dart';
 
 class NearestPetClinics extends ConsumerStatefulWidget {
   final User user;
   const NearestPetClinics({required this.user, super.key});
-
+  
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _NearestPetClinicsState();
@@ -63,7 +63,7 @@ class _NearestPetClinicsState extends ConsumerState<NearestPetClinics> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : ListView(children: [
+          :   ListView(children: [
               Align(
                 alignment: Alignment.topLeft,
                 child: Row(

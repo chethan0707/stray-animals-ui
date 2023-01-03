@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/models/user.dart' as u;
 import 'package:stray_animals_ui/screens/login_screen.dart';
-import 'package:stray_animals_ui/screens/nearest_pet_store.dart';
+import 'package:stray_animals_ui/screens/user_screens/nearest_pet_store.dart';
 import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
-import 'package:stray_animals_ui/screens/user_home.dart';
+import 'package:stray_animals_ui/screens/user_screens/user_home.dart';
 
 class NavBar extends ConsumerStatefulWidget {
   final u.User user;

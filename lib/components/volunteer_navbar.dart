@@ -1,16 +1,26 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:stray_animals_ui/models/user.dart' as u;
+import 'package:provider/provider.dart' as p;
+import 'package:stray_animals_ui/models/event_model.dart';
+import 'package:stray_animals_ui/models/volunteer.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/events/join_ngo.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/events/my_ngo_desc.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/events/vol_events.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
-import 'package:stray_animals_ui/screens/nearest_pet_store.dart';
-import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
-import 'package:stray_animals_ui/screens/user_home.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/nearest_pet_clinic_vol.dart';
+import "package:http/http.dart" as http;
+import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_home.dart';
+import '../blocs/application_bloc.dart';
+import '../models/ngo_model.dart';
 
 class VolunteerNavBar extends ConsumerStatefulWidget {
-  // final u.User user;
+  final Volunteer vol;
   final BuildContext context;
-  const VolunteerNavBar({super.key, required this.context});
+  const VolunteerNavBar({required this.vol, super.key, required this.context});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NavBarState();
@@ -31,50 +41,37 @@ class _NavBarState extends ConsumerState<VolunteerNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final application = p.Provider.of<ApplicationBloc>(context);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // UserAccountsDrawerHeader(
-          //   accountName: Text(widget.user.userName!),
-          //   accountEmail: Text(widget.user.email!),
-          //   currentAccountPicture: InkWell(
-          //     onTap: () {
-          //       Navigator.of(context).push(MaterialPageRoute(
-          //         builder: (context) => ProfilePage(user: widget.user),
-          //       ));
-          //     },
-          //     child: CircleAvatar(
-          //       child: ClipOval(
-          //         child: Image.network(
-          //           "http://localhost:8080/file/download/${widget.user.email}",
-          //           fit: BoxFit.cover,
-          //           width: 90,
-          //           height: 90,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          //   decoration: const BoxDecoration(
-          //     color: Colors.deepPurple,
-          //     // image: DecorationImage(
-          //     //     fit: BoxFit.fill,
-          //     //     image: NetworkImage(
-          //     //         'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg')),
-          //   ),
-          // ),
           const SizedBox(
             height: 50,
           ),
           ListTile(
             leading: const Icon(Icons.house),
             title: const Text('Reports'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => VolunteerHome(vol: widget.vol),
+              ));
+            },
           ),
           ListTile(
-            leading: const Icon(Icons.favorite),
-            title: const Text('Favorites'),
-            onTap: () {},
+            leading: const Icon(Icons.event_available),
+            title: const Text('Events'),
+            onTap: () async {
+              var nav = Navigator.of(context);
+              var items = await getItems();
+              nav.push(MaterialPageRoute(
+                builder: (context) => VolunteerEventsScreen(
+                    ngoEMail: widget.vol.ngos!,
+                    events: items,
+                    volEmail: widget.vol.email!),
+              ));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.pets),
@@ -84,12 +81,38 @@ class _NavBarState extends ConsumerState<VolunteerNavBar> {
           ListTile(
               leading: const Icon(Icons.local_hospital),
               title: const Text('Near by Veterinary Clinics'),
-              onTap: () {}),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      NearestPetClinicsVolunteer(vol: widget.vol),
+                ));
+              }),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.share),
-            title: const Text('Share'),
-            onTap: () {},
+            title: const Text('My NGO'),
+            onTap: () async {
+              if (widget.vol.ngos!.isEmpty) {
+                var navCon = Navigator.of(context);
+                var ngos = await getNGOs();
+                navCon.push(MaterialPageRoute(
+                  builder: (context) =>
+                      JoinNGO(ngos: ngos, volunteer: widget.vol),
+                ));
+              } else {
+                var navCon = Navigator.of(context);
+                var ngo = await getNGO();
+                navCon.push(
+                  MaterialPageRoute(
+                    builder: (context) => MyNGODesc(
+                      volEmail: widget.vol.email!,
+                      ngo: ngo,
+                      volunteer: widget.vol,
+                    ),
+                  ),
+                );
+              }
+            },
           ),
           const Divider(),
           ListTile(
@@ -107,5 +130,40 @@ class _NavBarState extends ConsumerState<VolunteerNavBar> {
         ],
       ),
     );
+  }
+
+  Future<List<Event>> getItems() async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/ngo/events").replace(
+        queryParameters: {"email": widget.vol.ngos},
+      ),
+    );
+    var jsonBody = json.decode(response.body);
+    var items =
+        List<Event>.from(jsonBody.map((model) => Event.fromJson(model)));
+    return items;
+  }
+
+  Future<NGO> getNGO() async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/ngo/get").replace(
+        queryParameters: {"email": widget.vol.ngos},
+      ),
+    );
+    var jsonBody = json.decode(response.body);
+    var ngo = NGO.fromJson(jsonBody);
+    return ngo;
+  }
+
+  Future<List<NGO>> getNGOs() async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/ngos").replace(
+          // queryParameters: {"email": FirebaseAuth.instance.currentUser!.email},
+          ),
+    );
+    var jsonBody = json.decode(response.body);
+    log(jsonBody.toString());
+    var ngos = List<NGO>.from(jsonBody.map((model) => NGO.fromJson(model)));
+    return ngos;
   }
 }

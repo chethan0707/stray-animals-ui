@@ -7,10 +7,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/models/user.dart' as user;
 import 'package:stray_animals_ui/models/volunteer.dart';
-import 'package:stray_animals_ui/screens/ngo_home_screen.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/ngo_home.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/reports/ngo_open_reports.dart';
 import 'package:stray_animals_ui/screens/register_screen.dart';
-import 'package:stray_animals_ui/screens/user_home.dart';
-import 'package:stray_animals_ui/screens/volunteer_home.dart';
+import 'package:stray_animals_ui/screens/user_screens/user_home.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_home.dart';
 
 import '../components/error_dialouge.dart';
 import '../models/ngo_model.dart';
@@ -175,15 +176,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: InkWell(
               onTap: () async {
                 try {
+                  // var con = context;
                   email = _emailController.text;
                   password = _passwordController.text;
                   var navContext = Navigator.of(context);
                   final firebaseUser = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: email, password: password);
-                  
+
                   var us = await getUserRole(email);
-                  if (us != null) {
+                  if (us.isNotEmpty) {
                     log(us);
                     if (us == "User") {
                       var use = await getUser(email);
@@ -214,6 +216,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         (route) => false,
                       );
                     }
+                  } else {
+                    throw Exception("User not found");
                   }
                 } on FirebaseAuthException catch (e) {
                   if (email.isEmpty || password.isEmpty) {
@@ -223,6 +227,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ErrorDialog()
                         .showErrorDialog(context, e.message.toString());
                   }
+                } on Exception catch (e) {
+                  ErrorDialog()
+                      .showErrorDialog(context, "User account not found");
                 }
               },
               child: Container(

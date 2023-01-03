@@ -242,7 +242,8 @@ class _UserReportScreenState extends ConsumerState<UserReportScreen> {
       "ngoId": widget.ngoEmail,
       "coordinates": coordinates,
       "status": false,
-      "urls": _urls
+      "urls": _urls,
+      "volunteer": "",
     });
     var url = "http://localhost:8080/api/user/report";
     var client = http.Client();

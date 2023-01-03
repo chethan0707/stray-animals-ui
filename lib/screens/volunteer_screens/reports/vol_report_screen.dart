@@ -7,15 +7,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/components/map_utils.dart';
 import 'package:stray_animals_ui/models/places_dto.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
-import 'package:stray_animals_ui/screens/ngo_reportss.dart/carousel_view.dart';
-import '../../models/report_model/user_report_model.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/reports/carousel_view.dart';
+import '../../../models/report_model/user_report_model.dart';
 import 'package:http/http.dart' as http;
 
 class VolunteerReport extends ConsumerStatefulWidget {
   final UserReport report;
   final String email;
+  final String ngoEmail;
   final PlacesDTO place;
-  const VolunteerReport({required this.email, required  this.place, required this.report, super.key});
+  const VolunteerReport(
+      {required this.ngoEmail,
+      required this.email,
+      required this.place,
+      required this.report,
+      super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NGOReportState();
@@ -49,6 +55,7 @@ class _NGOReportState extends ConsumerState<VolunteerReport> {
                             .replace(queryParameters: {
                           "id": widget.report.caseId,
                           "volID": widget.email,
+                          "ngoID": widget.ngoEmail
                         }),
                       );
                       if (response.statusCode == 200) {

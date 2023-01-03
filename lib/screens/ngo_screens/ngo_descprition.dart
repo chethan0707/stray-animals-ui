@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/screens/adoption_screens/adoption_screen.dart';
-import 'package:stray_animals_ui/screens/events_screen/user_events_screen.dart';
-import 'package:stray_animals_ui/screens/user_reports/user_report_screen.dart';
+import 'package:stray_animals_ui/screens/user_screens/events_screen/user_events_screen.dart';
+import 'package:stray_animals_ui/screens/user_screens/user_reports/user_report_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../components/map_utils.dart';
-import '../models/event_model.dart';
-import '../models/ngo_model.dart';
+import '../../components/map_utils.dart';
+import '../../models/event_model.dart';
+import '../../models/ngo_model.dart';
 import 'package:http/http.dart' as http;
 
 class NGODesc extends ConsumerStatefulWidget {

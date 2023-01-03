@@ -224,7 +224,8 @@ class AuthRepository {
         "profileUrl": email,
         "reports": [],
         "city": city,
-        "ngos": []
+        "events": [],
+        "ngos": ""
       });
       if (res.user != null) {
         var response = _client.post(Uri.parse(url),

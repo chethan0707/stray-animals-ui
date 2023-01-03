@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stray_animals_ui/screens/events_screen/add_event_screen.dart';
-import 'package:stray_animals_ui/screens/events_screen/all_events_screen.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/events/add_event_screen.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_upcoming_events.dart';
 
-import '../../models/event_model.dart';
+import '../../../models/event_model.dart';
+import 'ngo_completed_events.dart';
 
 class NGOEventMainScreen extends ConsumerStatefulWidget {
   final String ngoEmail;
@@ -73,8 +74,8 @@ class NGOEventScreenState extends ConsumerState<NGOEventMainScreen> {
             Expanded(
               child: TabBarView(
                 children: [
-                  AllEventsScreen(events: upcoming),
-                  AllEventsScreen(events: recent)
+                  NGOUpcomingEvents(ngoEmail: widget.ngoEmail),
+                  NGOCompletedEvents(ngoEmail: widget.ngoEmail)
                 ],
               ),
             )

@@ -29,6 +29,13 @@ class ApplicationBloc extends ChangeNotifier {
   ApplicationBloc() {
     setCurrentPosition();
   }
+
+  setMarkerOnLocation(LatLng latlng) {
+    markers = [];
+
+    notifyListeners();
+  }
+
   setCurrentPosition() async {
     currentLocation = await geoLocatorService.getCurrentLocation();
     selectedLocationStatic = Place(
@@ -42,10 +49,8 @@ class ApplicationBloc extends ChangeNotifier {
     var locationNear =
         markerService.createMarkerFromPlace(selectedLocationStatic);
     markers.add(locationNear);
-
     var _bounds = markerService.bounds(Set<Marker>.of(markers));
     bounds.add(_bounds!);
-
     notifyListeners();
   }
 
@@ -65,6 +70,32 @@ class ApplicationBloc extends ChangeNotifier {
         sLocation.geometry.location.lat, sLocation.geometry.location.lng);
   }
 
+  markPlaceOnMap(LatLng latlng) async {
+    markers = [];
+    Place place = Place(
+      name: "",
+      geometry: Geometry(
+        location: Location(lat: latlng.latitude, lng: latlng.longitude),
+      ),
+    );
+    var locationNear = markerService.createMarkerFromPlace(place);
+    markers = [];
+    var curr = await geoLocatorService.getCurrentLocation();
+    var currentLocation = Place(
+      name: "",
+      geometry: Geometry(
+        location: Location(lat: curr.latitude, lng: curr.longitude),
+      ),
+    );
+    var currentLocationMarker =
+        markerService.createMarkerFromPlace(currentLocation);
+    markers.add(currentLocationMarker);
+    markers.add(locationNear);
+    var _bounds = markerService.bounds(Set<Marker>.of(markers));
+    bounds.add(_bounds!);
+    notifyListeners();
+  }
+
   togglePlaceType(String value, bool selected) async {
     if (selected) {
       placeType = value;
@@ -79,8 +110,10 @@ class ApplicationBloc extends ChangeNotifier {
 
       markers = [];
       if (places.length > 0) {
-        var newMarker = markerService.createMarkerFromPlace(places[0]);
-        markers.add(newMarker);
+        for (var place in places) {
+          var newMarker = markerService.createMarkerFromPlace(place);
+          markers.add(newMarker);
+        }
       }
 
       var locationNear =

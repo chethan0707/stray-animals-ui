@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
+import '../../../components/photo_view_component.dart';
+
 class CarouseWithIndicator extends StatefulWidget {
   final List<String> images;
   const CarouseWithIndicator({required this.images, Key? key})
@@ -32,22 +34,30 @@ class _CarouseWithIndicatorState extends State<CarouseWithIndicator> {
           items: widget.images.map((i) {
             return Builder(
               builder: (BuildContext context) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurple[200],
-                    ),
-                    child: Image.network(
-                      "http://localhost:8080/file/download/$i",
-                      fit: BoxFit.fill,
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
+                return InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          PhotoViewComp(url: widget.images[_currentIndex]),
+                    ));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.deepPurple[200],
+                      ),
+                      child: Image.network(
+                        "http://localhost:8080/file/download/$i",
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 );

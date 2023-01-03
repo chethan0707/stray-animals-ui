@@ -6,40 +6,28 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stray_animals_ui/models/report_model/user_report_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:stray_animals_ui/repositories/places_services.dart';
-import 'package:stray_animals_ui/screens/ngo_reportss.dart/ngo_reports.dart';
-import '../components/ngo_nav_bar.dart';
-import '../models/ngo_model.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/ngo_navbar.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/reports/ngo_reports.dart';
+import '../../../models/ngo_model.dart';
 
-class NGOHome extends ConsumerStatefulWidget {
+class NGOOpenReports extends ConsumerStatefulWidget {
   final NGO ngo;
-  const NGOHome({super.key, required this.ngo});
+  const NGOOpenReports({super.key, required this.ngo});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NGOHomeState();
 }
 
-class _NGOHomeState extends ConsumerState<NGOHome> {
+class _NGOHomeState extends ConsumerState<NGOOpenReports> {
   List<UserReport> items = [];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(  
       backgroundColor: Colors.grey[300],
       drawer: NavBar(ngo: widget.ngo),
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          "Active reports",
-          style: GoogleFonts.aldrich(
-            fontSize: 20,
-            color: Colors.black,
-          ),
-        ),
-      ),
       body: RefreshIndicator(
         onRefresh: () {
           setState(() {});
@@ -66,10 +54,16 @@ class _NGOHomeState extends ConsumerState<NGOHome> {
                                       .getPlaceByCoordinates(LatLng(
                                           items[index].coordinates[0],
                                           items[index].coordinates[1]));
+                                  var volunteer;
+                                  items[index].volunteer.isEmpty
+                                      ? volunteer == null
+                                      : volunteer = await getVolunteer();
                                   navCont.push(
                                     MaterialPageRoute(
                                       builder: (context) => NGOReport(
-                                          place: place, report: items[index]),
+                                          place: place,
+                                          report: items[index],
+                                          volunteer: volunteer),
                                     ),
                                   );
                                 },
@@ -126,6 +120,16 @@ class _NGOHomeState extends ConsumerState<NGOHome> {
         ),
       ),
     );
+  }
+
+  Future<Volunteer> getVolunteer() async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/volunteer/get").replace(
+        queryParameters: {"email": items[0].volunteer},
+      ),
+    );
+    var jsonBody = json.decode(response.body);
+    return Volunteer.fromJson(jsonBody);
   }
 
   Future<List<UserReport>> getItems() async {

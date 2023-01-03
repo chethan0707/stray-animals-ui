@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/components/user_nav_bar.dart';
 import 'package:http/http.dart' as http;
-import 'package:stray_animals_ui/screens/ngo_descprition.dart';
-import '../models/ngo_model.dart';
-import '../models/user.dart' as u;
-import '../repositories/auth_repository.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/ngo_descprition.dart';
+import '../../models/ngo_model.dart';
+import '../../models/user.dart' as u;
+import '../../repositories/auth_repository.dart';
 
 class UserHome extends ConsumerStatefulWidget {
   final u.User user;

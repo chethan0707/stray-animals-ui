@@ -3,13 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stray_animals_ui/models/places_dto.dart';
-import 'package:stray_animals_ui/screens/events_screen/ngo_event_screen.dart';
-import '../../models/event_model.dart';
-import '../../repositories/places_services.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/events/vol_event.dart';
 
-class AllEventsScreen extends ConsumerWidget {
+import '../../../models/event_model.dart';
+import '../../../repositories/places_services.dart';
+
+class VolunteerAllEventsScreen extends ConsumerWidget {
+  final String volEmail;
+  final String ngoEmail;
   final List<Event> events;
-  const AllEventsScreen({required this.events, super.key});
+  const VolunteerAllEventsScreen(
+      {required this.ngoEmail,
+      required this.volEmail,
+      required this.events,
+      super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,15 +31,20 @@ class AllEventsScreen extends ConsumerWidget {
                   child: InkWell(
                     onTap: () async {
                       var navContext = Navigator.of(context);
-                      PlacesDTO place = await PlacesService().getPlaceByCoordinates(
-                          LatLng(events[index].coordinates[0],
+                      PlacesDTO place = await PlacesService()
+                          .getPlaceByCoordinates(LatLng(
+                              events[index].coordinates[0],
                               events[index].coordinates[1]));
-                      navContext.push(MaterialPageRoute(
-                        builder: (context) => NGOEventScreen(
-                          event: events[index],
-                          place: place,
+                      navContext.push(
+                        MaterialPageRoute(
+                          builder: (context) => VolunteerEventScreen(
+                            ngoEmail: ngoEmail,
+                            volEmail: volEmail,
+                            event: events[index],
+                            place: place,
+                          ),
                         ),
-                      ),);
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -50,11 +62,12 @@ class AllEventsScreen extends ConsumerWidget {
                             ),
                           ),
                           ListTile(
-                              title: Text(
-                            events[index].description,
-                            style: GoogleFonts.aldrich(
-                                fontSize: 16, color: Colors.black),
-                          ),),
+                            title: Text(
+                              events[index].description,
+                              style: GoogleFonts.aldrich(
+                                  fontSize: 16, color: Colors.black),
+                            ),
+                          ),
                         ],
                       ),
                     ),
