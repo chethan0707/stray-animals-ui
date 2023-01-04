@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import '../../../models/volunteer.dart';
 
 class AssignVolunteerScreen extends ConsumerStatefulWidget {
@@ -55,7 +55,8 @@ class _AssignVolunteerScreenState extends ConsumerState<AssignVolunteerScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    title: Text('${availableVolunteers[index].userName}'),
+                    title:
+                        Text('${availableVolunteers[selectedIndex].userName}'),
                     tileColor:
                         selectedIndex == index ? Colors.deepPurple[200] : null,
                     onTap: () {
@@ -165,8 +166,8 @@ class _AssignVolunteerScreenState extends ConsumerState<AssignVolunteerScreen> {
   }
 
   Future<void> assignVolunteer(String volunteerEmail, String reportId) async {
-    log("Assigning volunteer");
-    http.post(
+    var scafMess = ScaffoldMessenger.of(context);
+    var response = await http.post(
       Uri.parse("http://localhost:8080/api/ngo/report/volunteer/assign"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -177,5 +178,19 @@ class _AssignVolunteerScreenState extends ConsumerState<AssignVolunteerScreen> {
         "volunteerId": volunteerEmail,
       }),
     );
+
+    if (response.statusCode == 200) {
+      String email =
+          Uri.encodeComponent(widget.volunteers[selectedIndex].email!);
+      String subject = Uri.encodeComponent("Report Assigned");
+      String body = Uri.encodeComponent("New report assigned");
+
+      Uri mail = Uri.parse("mailto:$email?subject=$subject&body=$body");
+      if (await launchUrl(mail)) {
+      } else {
+        scafMess.showSnackBar(
+            const SnackBar(content: Text("Could not open mail app")));
+      }
+    }
   }
 }

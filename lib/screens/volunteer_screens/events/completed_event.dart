@@ -13,15 +13,14 @@ import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_event_edit.dart'
 
 import '../../../models/event_model.dart';
 
-class VolunteerEventScreen extends ConsumerStatefulWidget {
+class CompletedEvent extends ConsumerStatefulWidget {
   final String volEmail;
   final String ngoEmail;
   final Event event;
   final PlacesDTO place;
-  const VolunteerEventScreen(
-      {
-      required this.ngoEmail,
-        required this.volEmail,
+  const CompletedEvent(
+      {required this.ngoEmail,
+      required this.volEmail,
       required this.event,
       required this.place,
       super.key});
@@ -30,7 +29,7 @@ class VolunteerEventScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _NGOEventScreenState();
 }
 
-class _NGOEventScreenState extends ConsumerState<VolunteerEventScreen> {
+class _NGOEventScreenState extends ConsumerState<CompletedEvent> {
   PageController pageController = PageController();
   Set<String> volunteers = {};
   @override
@@ -135,7 +134,6 @@ class _NGOEventScreenState extends ConsumerState<VolunteerEventScreen> {
                             crossAxisCount: 3),
                     itemCount: widget.event.images.length,
                     itemBuilder: (BuildContext context, int index) {
-                      log(widget.event.images.length.toString());
                       return InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -164,85 +162,13 @@ class _NGOEventScreenState extends ConsumerState<VolunteerEventScreen> {
           const SizedBox(
             height: 20,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30, bottom: 18),
-            child: Row(
-              children: [
-                volunteers.contains(widget.volEmail) == false
-                    ? ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text("Join event"),
-                                content: const Text(
-                                    "Are you sure you want to join this event?"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text("Cancel"),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      var navCon = Navigator.of(context);
-                                      http.post(
-                                        Uri.parse(
-                                                "http://localhost:8080/api/volunteer/event/join/")
-                                            .replace(
-                                          queryParameters: {
-                                            "volunteerEmail": widget.volEmail,
-                                            "eventId": widget.event.eventId
-                                          },
-                                        ),
-                                      );
-                                      navCon.pop();
-                                      navCon.pop();
-                                    },
-                                    child: const Text("Join"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: const Text("Join event"),
-                      )
-                    : const Text(""),
-              ],
-            ),
-          )
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //     onPressed: () {
-      //       locationDialougue(context);
-      //     },
-      //     child: const Icon(Icons.location_on)),
-      // floatingActionButton: ExpandableFab.location,
-      floatingActionButton: ExpandableFab(
-        children: [
-          FloatingActionButton.small(
-            heroTag: "btn1",
-            child: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => EditEvent(
-                  event: widget.event,
-                  ngoEmail: widget.ngoEmail,
-                ),
-              ));
-            },
-          ),
-          FloatingActionButton.small(
-            heroTag: "btn2",
-            child: const Icon(Icons.search),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            locationDialougue(context);
+          },
+          child: const Icon(Icons.location_on)),
     );
   }
 
@@ -258,7 +184,7 @@ class _NGOEventScreenState extends ConsumerState<VolunteerEventScreen> {
           ),
         ),
       ),
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       btnOkText: "Open in maps",
       btnOkOnPress: () {
         MapUtils.openMap(

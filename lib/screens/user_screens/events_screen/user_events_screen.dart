@@ -4,8 +4,12 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../models/event_model.dart';
+import '../../../models/places_dto.dart';
+import '../../../repositories/places_services.dart';
+import 'events_details_screen.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
   final List<Event> events;
@@ -129,9 +133,17 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                         return Padding(
                           padding: const EdgeInsets.all(15),
                           child: InkWell(
-                            onTap: () {
-                              // Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserEv,))
-                              log("Hello");
+                            onTap: () async {
+                              var navContext = Navigator.of(context);
+                              PlacesDTO place = await PlacesService()
+                                  .getPlaceByCoordinates(LatLng(
+                                      events[index].coordinates[0],
+                                      events[index].coordinates[1]));
+                              navContext.push(MaterialPageRoute(
+                                  builder: (context) => EventDetails(
+                                        event: events[index],
+                                        place: place,
+                                      )));
                             },
                             child: Container(
                               decoration: BoxDecoration(

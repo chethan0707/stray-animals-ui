@@ -10,7 +10,7 @@ import 'package:stray_animals_ui/components/volunteer_navbar.dart';
 import 'package:stray_animals_ui/models/ngo_model.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:http/http.dart' as http;
-import 'package:stray_animals_ui/screens/volunteer_screens/events/join_ngo.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/join_ngo.dart';
 import 'package:stray_animals_ui/screens/volunteer_screens/reports/vol_closed_reports.dart';
 import 'package:stray_animals_ui/screens/volunteer_screens/reports/vol_report_screen.dart';
 import '../../models/report_model/user_report_model.dart';

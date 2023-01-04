@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/models/places_dto.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/reports/carousel_view.dart';
+import '../../../components/map_utils.dart';
 import '../../../models/report_model/user_report_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -59,7 +60,8 @@ class _NGOReportState extends ConsumerState<VolunteerClosedReport> {
           Padding(
             padding: const EdgeInsets.all(15),
             child: Text(widget.report.description,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                style:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
           ),
           const SizedBox(
             height: 20,
@@ -89,8 +91,8 @@ class _NGOReportState extends ConsumerState<VolunteerClosedReport> {
           //     "Get directions from google maps",
           //     style: GoogleFonts.aldrich(),
           //   ),
-          // )
-          Text("Animal rescued by: ${widget.uName}"),
+          // ),
+          InkWell(child: Text("Animal rescued by: ${widget.uName}")),
         ],
       ),
     );

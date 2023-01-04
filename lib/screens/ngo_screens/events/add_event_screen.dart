@@ -170,7 +170,7 @@ class _AddEventState extends ConsumerState<AddEvent> {
                               cont.showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                    'Case reported sucessfully',
+                                    'Event added sucessfully',
                                     style: TextStyle(color: Colors.green),
                                   ),
                                 ),

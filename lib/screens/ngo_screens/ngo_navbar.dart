@@ -6,7 +6,9 @@ import 'package:stray_animals_ui/models/ngo_model.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_events_main_screen.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:stray_animals_ui/screens/ngo_screens/volunteers/volunteer_list.dart';
 import '../../models/event_model.dart';
+import '../../models/volunteer.dart';
 
 class NavBar extends StatelessWidget {
   final NGO ngo;
@@ -66,7 +68,18 @@ class NavBar extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.group),
             title: const Text('Volunteers'),
-            onTap: () {},
+            onTap: () async {
+              var navContext = Navigator.of(context);
+              var items = await getVolunteers(ngo.email);
+              navContext.push(
+                MaterialPageRoute(
+                  builder: (context) => VolunteerList(
+                    ngoEmail: ngo.email,
+                    // volunteers: items,
+                  ),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.group),
@@ -105,6 +118,14 @@ class NavBar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<List<Volunteer>> getVolunteers(String ngoId) async {
+    final response = await http.get(
+        Uri.parse("http://localhost:8080/api/ngo/volunteers")
+            .replace(queryParameters: {"email": ngoId}));
+    var volunteers = jsonDecode(response.body) as List;
+    return volunteers.map((e) => Volunteer.fromJson(e)).toList();
   }
 
   Future<List<Event>> getItems() async {

@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/models/user.dart' as u;
+import 'package:stray_animals_ui/repositories/auth_repository.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:stray_animals_ui/screens/user_screens/nearest_pet_store.dart';
 import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
 import 'package:stray_animals_ui/screens/user_screens/user_home.dart';
+import 'package:stray_animals_ui/screens/user_screens/user_reports/my_reports.dart';
 
 class NavBar extends ConsumerStatefulWidget {
   final u.User user;
@@ -66,19 +70,27 @@ class _NavBarState extends ConsumerState<NavBar> {
           ListTile(
             leading: const Icon(Icons.house),
             title: const Text('NGOs'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UserHome(user: widget.user),
-                ),
-              );
+            onTap: () async {
+              var con = Navigator.of(context);
+              var us = await ref
+                  .read(authRepositoryProvider)
+                  .getUserFromDB(widget.user.email!);
+              con.push(MaterialPageRoute(
+                builder: (con) => UserHome(user: us!),
+              ));
             },
           ),
           ListTile(
             leading: const Icon(Icons.favorite),
-            title: const Text('Favorites'),
-            onTap: () {},
+            title: const Text('My  Reports'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MyReports(reports: widget.user.userReports, userEmail: widget.user.email!),
+                  ));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.pets),

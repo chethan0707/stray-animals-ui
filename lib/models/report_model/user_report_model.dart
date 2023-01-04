@@ -1,5 +1,5 @@
 class UserReport {
-  final String volunteer;
+  final String? volunteer;
   final String caseId;
   final String userId;
   final List<double> coordinates;

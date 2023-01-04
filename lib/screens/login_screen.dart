@@ -16,6 +16,7 @@ import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_home.dart';
 import '../components/error_dialouge.dart';
 import '../models/ngo_model.dart';
 import '../repositories/auth_repository.dart';
+import 'forgot_password.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -176,20 +177,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: InkWell(
               onTap: () async {
                 try {
-                  // var con = context;
                   email = _emailController.text;
                   password = _passwordController.text;
                   var navContext = Navigator.of(context);
+                  var scafCon = ScaffoldMessenger.of(context);
                   final firebaseUser = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: email, password: password);
-
                   var us = await getUserRole(email);
                   if (us.isNotEmpty) {
-                    log(us);
+                    // log(firebaseUser.user!.emailVerified.toString());
+                    // if (firebaseUser.user!.emailVerified == false) {
+                    //   await firebaseUser.user!.sendEmailVerification();
+                    //   scafCon.showSnackBar(
+                    //     const SnackBar(
+                    //       content: Text("Please verify your email"),
+                    //     ),
+                    //   );
+                    // } else
                     if (us == "User") {
+                      log("Verified");
                       var use = await getUser(email);
-
                       navContext.pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => UserHome(
@@ -272,6 +280,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 },
                 child: const Text(
                   'Register now',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'forgot password? ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ForgotPassword(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Change password',
                   style: TextStyle(
                     color: Colors.blue,
                     fontWeight: FontWeight.bold,

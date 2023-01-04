@@ -38,7 +38,7 @@ class _NGOCloseState extends ConsumerState<NGOCloseReports> {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 if (items.isEmpty) {
-                  return const Center(child: Text('No active reports found'));
+                  return const Center(child: Text('No past reports found'));
                 } else {
                   return ListView.builder(
                     itemCount: items.length,
@@ -125,7 +125,9 @@ class _NGOCloseState extends ConsumerState<NGOCloseReports> {
     );
     var jsonBody = json.decode(response.body);
     items = List<UserReport>.from(
-        jsonBody.map((model) => UserReport.fromJson(model)));
+            jsonBody.map((model) => UserReport.fromJson(model)))
+        .where((element) => element.status == true)
+        .toList();
 
     return items;
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,12 +8,11 @@ import 'package:stray_animals_ui/components/map_utils.dart';
 import 'package:stray_animals_ui/models/event_model.dart';
 import 'package:stray_animals_ui/models/ngo_model.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
+import 'package:stray_animals_ui/repositories/auth_repository.dart';
 import 'package:stray_animals_ui/screens/volunteer_screens/events/vol_events.dart';
 import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_home.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
-
-import '../reports/vol_report_screen.dart';
 
 class MyNGODesc extends ConsumerStatefulWidget {
   final NGO ngo;
@@ -32,7 +32,63 @@ class MyNGODescState extends ConsumerState<MyNGODesc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("My NGO")),
+        appBar: AppBar(
+          title: const Text("My NGO"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.grey[300],
+                        title: const Text('Leave NGO'),
+                        content: Text(
+                            "Are you sure you want to leave ${widget.ngo.name} as volunteer?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              var navPop = Navigator.pop(context, true);
+                              var navContext = Navigator.of(context);
+                              await http.delete(
+                                Uri.parse(
+                                        "http://localhost:8080/api/ngo/remove/volunteer")
+                                    .replace(
+                                  queryParameters: {
+                                    "ngoEmail": widget.ngo.email,
+                                    "volEmail": widget.volEmail
+                                  },
+                                ),
+                              );
+                              var volunteer = await ref
+                                  .read(authRepositoryProvider)
+                                  .getVolunteerFromDB(widget.volunteer.email!);
+                              log(volunteer!.userName!);
+                              navContext.pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (context) => VolunteerHome(
+                                    vol: volunteer,
+                                  ),
+                                ),
+                                (route) => false,
+                              );
+                            },
+                            child: const Text('Leave'),
+                          )
+                        ],
+                      );
+                    },
+                  );
+                },
+                icon: const Icon(Icons.logout))
+          ],
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

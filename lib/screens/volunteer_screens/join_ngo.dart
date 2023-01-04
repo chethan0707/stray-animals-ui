@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import '../../../models/ngo_model.dart';
-import '../../../models/volunteer.dart';
+import 'package:stray_animals_ui/repositories/auth_repository.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_home.dart';
+import '../../models/ngo_model.dart';
+import '../../models/volunteer.dart';
 
 class JoinNGO extends ConsumerStatefulWidget {
   final Volunteer volunteer;
@@ -74,9 +78,23 @@ class _JoinNGOState extends ConsumerState<JoinNGO> {
                                 child: const Text('Cancel')),
                             TextButton(
                               onPressed: () async {
-                                updateVolunteer();
-                                Navigator.pop(context, true);
-                                Navigator.pop(context, true);
+                                var navPop = Navigator.pop(context, true);
+                                var navContext = Navigator.of(context);
+                                await updateVolunteer();
+                                navPop;
+                                var volunteer = await ref
+                                    .read(authRepositoryProvider)
+                                    .getVolunteerFromDB(
+                                        widget.volunteer.email!);
+                                log(volunteer!.userName!);
+                                navContext.pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => VolunteerHome(
+                                      vol: volunteer,
+                                    ),
+                                  ),
+                                  (route) => false,
+                                );
                               },
                               child: const Text('Join'),
                             )

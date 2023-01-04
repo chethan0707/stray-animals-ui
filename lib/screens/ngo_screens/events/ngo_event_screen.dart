@@ -5,13 +5,14 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/components/map_utils.dart';
 import 'package:stray_animals_ui/components/photo_view_component.dart';
 import 'package:stray_animals_ui/models/places_dto.dart';
+import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_event_edit.dart';
 import 'package:http/http.dart' as http;
+import 'package:stray_animals_ui/screens/ngo_screens/events/view_volunteers.dart';
 import '../../../models/event_model.dart';
 
 class NGOEventScreen extends ConsumerStatefulWidget {
@@ -30,7 +31,7 @@ class NGOEventScreen extends ConsumerStatefulWidget {
 
 class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
   PageController pageController = PageController();
-
+  List<Volunteer> volunteers = [];
   @override
   void initState() {
     super.initState();
@@ -113,9 +114,32 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0, top: 4),
             child: Expanded(
-              child: Text(
-                "${widget.event.volunteers.length} / ${widget.event.volunteersRequiredCount} ",
-                style: GoogleFonts.aldrich(fontSize: 18),
+              child: Row(
+                children: [
+                  Text(
+                    "${widget.event.volunteers.length} / ${widget.event.volunteersRequiredCount} ",
+                    style: GoogleFonts.aldrich(fontSize: 18),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  widget.event.volunteers.isNotEmpty
+                      ? InkWell(
+                          onTap: () async {
+                            var navCon = Navigator.of(context);
+                            var vols = await getVolunteers();
+                            navCon.push(MaterialPageRoute(
+                              builder: (context) =>
+                                  ViewVolunteers(volunteers: vols),
+                            ));
+                          },
+                          child: const Text(
+                            "View volunteers",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
               ),
             ),
           ),
@@ -195,8 +219,32 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
                   heroTag: "btn2",
                   child: const Icon(Icons.done),
                   onPressed: () {
-                    addEvent(ScaffoldMessenger.of(context));
-                    Navigator.of(context).pop();
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.grey[300],
+                          title: const Text('Close event'),
+                          content: Text(
+                              "Are you sure you want to mark ${widget.event.eventName} as volunteer?"),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel')),
+                            TextButton(
+                              onPressed: () async {
+                                addEvent(ScaffoldMessenger.of(context));
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Confirm'),
+                            )
+                          ],
+                        );
+                      },
+                    );
                   },
                 )
               : Container(),
@@ -227,9 +275,6 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
   }
 
   Future<bool> addEvent(ScaffoldMessengerState context) async {
-    // var coordinates = await getCoOrdinates();
-    // var b = jsonEncode();
-
     var url = "http://localhost:8080/api/ngo/event/update";
     var client = http.Client();
     try {
@@ -272,6 +317,28 @@ class _NGOEventScreenState extends ConsumerState<NGOEventScreen> {
       );
       log(e.toString());
       return false;
+    }
+  }
+
+  Future<List<Volunteer>> getVolunteers() async {
+    try {
+      var client = http.Client();
+      var response = await client.post(
+        Uri.parse(
+          "http://localhost:8080/api/ngo/event/volunteers",
+        ),
+        body: jsonEncode({
+          "emails": widget.event.volunteers,
+        }),
+        headers: {'Content-type': 'application/json'},
+      );
+      log(response.body.toString());
+      var jsonResponse = jsonDecode(response.body) as List;
+      volunteers = jsonResponse.map((e) => Volunteer.fromJson(e)).toList();
+      return volunteers;
+    } catch (e) {
+      log(e.toString());
+      return [];
     }
   }
 }

@@ -25,7 +25,7 @@ class _NGOHomeState extends ConsumerState<NGOOpenReports> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(  
+    return Scaffold(
       backgroundColor: Colors.grey[300],
       drawer: NavBar(ngo: widget.ngo),
       body: RefreshIndicator(
@@ -54,8 +54,9 @@ class _NGOHomeState extends ConsumerState<NGOOpenReports> {
                                       .getPlaceByCoordinates(LatLng(
                                           items[index].coordinates[0],
                                           items[index].coordinates[1]));
-                                  var volunteer;
-                                  items[index].volunteer.isEmpty
+                                  Volunteer? volunteer;
+                                  items[index].volunteer == null ||
+                                          items[index].volunteer!.isEmpty
                                       ? volunteer == null
                                       : volunteer = await getVolunteer();
                                   navCont.push(

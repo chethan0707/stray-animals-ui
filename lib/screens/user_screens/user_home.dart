@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stray_animals_ui/components/user_nav_bar.dart';
+import 'package:stray_animals_ui/screens/user_screens/user_nav_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:stray_animals_ui/screens/ngo_screens/ngo_descprition.dart';
 import '../../models/ngo_model.dart';

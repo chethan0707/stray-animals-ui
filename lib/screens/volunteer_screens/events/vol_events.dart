@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stray_animals_ui/screens/volunteer_screens/events/vol_all_events_screen.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/events/vol_completed_events.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/events/vol_upcoming_events.dart';
 
 import '../../../models/event_model.dart';
 
@@ -87,14 +88,10 @@ class _VolunteerEventsScreenState extends ConsumerState<VolunteerEventsScreen> {
             Expanded(
               child: TabBarView(
                 children: [
-                  VolunteerAllEventsScreen(
-                      ngoEmail: widget.ngoEMail,
-                      volEmail: widget.volEmail,
-                      events: upcoming),
-                  VolunteerAllEventsScreen(
-                      ngoEmail: widget.ngoEMail,
-                      volEmail: widget.volEmail,
-                      events: recent)
+                  UpcomingEventsVol(
+                      ngoEmail: widget.ngoEMail, volEmail: widget.volEmail),
+                  CompletedEventsVol(
+                      ngoEmail: widget.ngoEMail, volEmail: widget.volEmail),
                 ],
               ),
             )

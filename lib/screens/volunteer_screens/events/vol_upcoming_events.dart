@@ -4,22 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:stray_animals_ui/models/places_dto.dart';
-import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_event_screen.dart';
+import 'package:stray_animals_ui/repositories/places_services.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/events/open_event.dart';
+
 import '../../../models/event_model.dart';
-import '../../../repositories/places_services.dart';
 import 'package:http/http.dart' as http;
 
-class NGOCompletedEvents extends ConsumerStatefulWidget {
+import '../../../models/places_dto.dart';
+
+class UpcomingEventsVol extends ConsumerStatefulWidget {
   final String ngoEmail;
-  const NGOCompletedEvents({required this.ngoEmail, super.key});
+  final String volEmail;
+  const UpcomingEventsVol(
+      {required this.volEmail, required this.ngoEmail, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _NGOUpcomingEventsState();
+      UpcomingEventsVolState();
 }
 
-class _NGOUpcomingEventsState extends ConsumerState<NGOCompletedEvents> {
+class UpcomingEventsVolState extends ConsumerState<UpcomingEventsVol> {
   List<Event> events = [];
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,7 @@ class _NGOUpcomingEventsState extends ConsumerState<NGOCompletedEvents> {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 if (events.isEmpty) {
-                  return const Center(child: Text("No past events! "));
+                  return const Center(child: Text("No upcoming events! "));
                 } else {
                   return ListView.builder(
                     itemCount: events.length,
@@ -52,12 +56,12 @@ class _NGOUpcomingEventsState extends ConsumerState<NGOCompletedEvents> {
                                     events[index].coordinates[1]));
                             navContext.push(
                               MaterialPageRoute(
-                                builder: (context) => NGOEventScreen(
-                                  ngoEmail: widget.ngoEmail,
-                                  event: events[index],
-                                  place: place,
-                                ),
-                              ),
+                                  builder: (context) => VolunteerEventScreen(
+                                        volEmail: widget.volEmail,
+                                        ngoEmail: widget.ngoEmail,
+                                        event: events[index],
+                                        place: place,
+                                      )),
                             );
                           },
                           child: Container(
@@ -90,7 +94,6 @@ class _NGOUpcomingEventsState extends ConsumerState<NGOCompletedEvents> {
                     },
                   );
                 }
-            
               default:
                 return const Center(child: CircularProgressIndicator());
             }
@@ -109,7 +112,7 @@ class _NGOUpcomingEventsState extends ConsumerState<NGOCompletedEvents> {
     var jsonBody = json.decode(response.body);
     var items =
         List<Event>.from(jsonBody.map((model) => Event.fromJson(model)));
-    events = items.where((element) => element.status == true).toList();
-    return events;
+    events = items.where((element) => element.status == false).toList();
+    return items;
   }
 }

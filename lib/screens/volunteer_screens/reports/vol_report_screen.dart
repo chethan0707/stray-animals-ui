@@ -52,11 +52,13 @@ class _NGOReportState extends ConsumerState<VolunteerReport> {
                       final response = await http.post(
                         Uri.parse(
                                 "http://localhost:8080/api/volunteer/report/close")
-                            .replace(queryParameters: {
-                          "id": widget.report.caseId,
-                          "volID": widget.email,
-                          "ngoID": widget.ngoEmail
-                        }),
+                            .replace(
+                          queryParameters: {
+                            "id": widget.report.caseId,
+                            "volID": widget.email,
+                            "ngoID": widget.ngoEmail
+                          },
+                        ),
                       );
                       if (response.statusCode == 200) {
                         navCon.pop();
@@ -100,8 +102,13 @@ class _NGOReportState extends ConsumerState<VolunteerReport> {
           ),
           Padding(
             padding: const EdgeInsets.all(15),
-            child: Text(widget.report.description,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+            child: Text(
+              widget.report.description,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
           const SizedBox(
             height: 20,

@@ -230,6 +230,7 @@ class AuthRepository {
       if (res.user != null) {
         var response = _client.post(Uri.parse(url),
             body: b, headers: {'Content-type': 'application/json'});
+
         return res.user;
       }
     } catch (e) {

@@ -1,5 +1,3 @@
-import 'package:stray_animals_ui/models/report_model/user_report_model.dart';
-
 class User {
   String? email;
   String? id;
@@ -7,7 +5,7 @@ class User {
   String? userName;
   String? role;
   String? profileUrl;
-  List<UserReport> userReports = [];
+  List<String> userReports = [];
   User(
       {this.email,
       this.id,
@@ -24,20 +22,18 @@ class User {
     userName = json['userName'];
     role = json['role'];
     profileUrl = json['profileUrl'];
-    userReports = (json['userReports'] as List)
-        .map((e) => UserReport.fromJson(e))
-        .toList();
+    userReports = List.castFrom<dynamic, String>(json['userReports']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['email'] = this.email;
-    data['id'] = this.id;
-    data['phone'] = this.phone;
-    data['userName'] = this.userName;
-    data['role'] = this.role;
-    data['profileUrl'] = this.profileUrl;
-    data['userReports'] = userReports.map((e) => e.toJson()).toList();
+    data['email'] = email;
+    data['id'] = id;
+    data['phone'] = phone;
+    data['userName'] = userName;
+    data['role'] = role;
+    data['profileUrl'] = profileUrl;
+    data['userReports'] = userReports;
     return data;
   }
 }
