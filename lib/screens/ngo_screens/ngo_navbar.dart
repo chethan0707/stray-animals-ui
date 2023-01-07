@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stray_animals_ui/models/ngo_model.dart';
+import 'package:stray_animals_ui/screens/adoption_screens/adoption_screen.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_events_main_screen.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:http/http.dart' as http;
@@ -87,9 +88,15 @@ class NavBar extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
-            leading: const Icon(Icons.share),
-            title: const Text('Share'),
-            onTap: () {},
+            leading: const Icon(Icons.pets),
+            title: const Text('Adoption'),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AdoptionScreen(ngo: ngo),
+                ),
+              );
+            },
           ),
           const Divider(),
           ListTile(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +31,7 @@ class _VolunteerListState extends ConsumerState<VolunteerList> {
                 case ConnectionState.none:
                   return const Center(child: Text("No connection"));
                 case ConnectionState.done:
-                  return volunteers.length > 1
+                  return volunteers.isNotEmpty
                       ? ListView.builder(
                           itemCount: volunteers.length,
                           itemBuilder: (context, index) {

@@ -21,7 +21,7 @@ class User {
     phone = json['phone'];
     userName = json['userName'];
     role = json['role'];
-    profileUrl = json['profileUrl'];
+    profileUrl = json['profileURL'];
     userReports = List.castFrom<dynamic, String>(json['userReports']);
   }
 

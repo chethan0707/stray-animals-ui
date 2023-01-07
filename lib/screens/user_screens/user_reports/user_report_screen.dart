@@ -67,119 +67,119 @@ class _UserReportScreenState extends ConsumerState<UserReportScreen> {
           child: _isUploading
               ? showLoading()
               : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20.0, top: 20),
-                      child: Row(
-                        children: [
-                          Text("Enter Description",
-                              style: GoogleFonts.aldrich(
-                                fontSize: 20,
-                              )),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    buildTextFiled(_descriptionController, 'Description'),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple.shade400),
-                      onPressed: () async {
-                        await selectImage();
-                        setState(() {});
-                      },
-                      icon: const Icon(Icons.image_outlined),
-                      label: const Text("Select images"),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0, top: 20),
+                    child: Row(
                       children: [
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepPurple.shade400),
-                          onPressed: () async {
-                            var cont = ScaffoldMessenger.of(context);
-                            var navCont = Navigator.of(context);
-                            if (_selectedFiles.isNotEmpty) {
-                              await uploadFunction(_selectedFiles);
-                            }
-                            if (description.isEmpty) {
-                              cont.showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Description cannot be empty',
-                                  ),
-                                ),
-                              );
-                            } else if (_selectedFiles.isEmpty) {
-                              cont.showSnackBar(
-                                const SnackBar(
-                                  content: Text('Upload images'),
-                                ),
-                              );
-                            } else if (await registerCase(cont) == true) {
-                              cont.showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Case reported sucessfully',
-                                    style: TextStyle(color: Colors.green),
-                                  ),
-                                ),
-                              );
-                              navCont.pop();
-                            }
-                          },
-                          icon: const Icon(Icons.image_outlined),
-                          label: const Text("Upload"),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red.shade400),
-                          onPressed: () {
-                            _selectedFiles.clear();
-                            setState(() {});
-                          },
-                          icon: const Icon(Icons.delete),
-                          label: const Text("Clear"),
-                        )
+                        Text("Enter Description",
+                            style: GoogleFonts.aldrich(
+                              fontSize: 20,
+                            )),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    _selectedFiles.isEmpty
-                        ? const Padding(
-                            padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                            child: Text("No images selected"),
-                          )
-                        : Expanded(
-                            child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3),
-                              itemCount: _selectedFiles.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                log(_selectedFiles.length.toString());
-                                return Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Image.file(
-                                    File(_selectedFiles[index].path),
-                                    fit: BoxFit.cover,
-                                  ),
-                                );
-                              },
-                            ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  buildTextFiled(_descriptionController, 'Description'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple.shade400),
+                    onPressed: () async {
+                      await selectImage();
+                      setState(() {});
+                    },
+                    icon: const Icon(Icons.image_outlined),
+                    label: const Text("Select images"),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurple.shade400),
+                        onPressed: () async {
+                          var cont = ScaffoldMessenger.of(context);
+                          var navCont = Navigator.of(context);
+                          if (_selectedFiles.isNotEmpty) {
+                            await uploadFunction(_selectedFiles);
+                          }
+                          if (description.isEmpty) {
+                            cont.showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Description cannot be empty',
+                                ),
+                              ),
+                            );
+                          } else if (_selectedFiles.isEmpty) {
+                            cont.showSnackBar(
+                              const SnackBar(
+                                content: Text('Upload images'),
+                              ),
+                            );
+                          } else if (await registerCase(cont) == true) {
+                            cont.showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Case reported sucessfully',
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                              ),
+                            );
+                            navCont.pop();
+                          }
+                        },
+                        icon: const Icon(Icons.image_outlined),
+                        label: const Text("Upload"),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red.shade400),
+                        onPressed: () {
+                          _selectedFiles.clear();
+                          setState(() {});
+                        },
+                        icon: const Icon(Icons.delete),
+                        label: const Text("Clear"),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  _selectedFiles.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                          child: Text("No images selected"),
+                        )
+                      : Expanded(
+                          child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3),
+                            itemCount: _selectedFiles.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              log(_selectedFiles.length.toString());
+                              return Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Image.file(
+                                  File(_selectedFiles[index].path),
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            },
                           ),
-                  ],
-                )),
+                        ),
+                ],
+              )),
     );
   }
 

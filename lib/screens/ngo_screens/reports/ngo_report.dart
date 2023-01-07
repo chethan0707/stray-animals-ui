@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,10 +30,10 @@ class _NGOReportState extends ConsumerState<NGOReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.done),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   child: const Icon(Icons.done),
+      // ),
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
@@ -64,7 +63,8 @@ class _NGOReportState extends ConsumerState<NGOReport> {
           Padding(
             padding: const EdgeInsets.all(15),
             child: Text(widget.report.description,
-                style:const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                style:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
           ),
           const SizedBox(
             height: 20,
@@ -190,7 +190,7 @@ class _NGOReportState extends ConsumerState<NGOReport> {
     final response = await http.get(
         Uri.parse("http://localhost:8080/api/ngo/volunteers")
             .replace(queryParameters: {"email": ngoId}));
- 
+
     var volunteers = jsonDecode(response.body) as List;
     return volunteers.map((e) => Volunteer.fromJson(e)).toList();
   }

@@ -8,7 +8,7 @@ import 'package:stray_animals_ui/models/report_model/user_report_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:stray_animals_ui/repositories/places_services.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/ngo_navbar.dart';
-import 'package:stray_animals_ui/screens/ngo_screens/reports/ngo_reports.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/reports/ngo_report.dart';
 import '../../../models/ngo_model.dart';
 
 class NGOCloseReports extends ConsumerStatefulWidget {

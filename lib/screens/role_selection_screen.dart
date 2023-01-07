@@ -222,6 +222,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                   if (value == null) {
                     return 'Please select role.';
                   }
+                  return null;
                 },
                 onChanged: (value) {
                   setState(() {

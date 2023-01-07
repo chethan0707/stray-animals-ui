@@ -240,7 +240,9 @@ class _NGODescState extends ConsumerState<NGODesc> {
               InkWell(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AdoptionScreen(),
+                    builder: (context) => AdoptionScreen(
+                      ngo: widget.ngo,
+                    ),
                   ));
                 },
                 child: Container(

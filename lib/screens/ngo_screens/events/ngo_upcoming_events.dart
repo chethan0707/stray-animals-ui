@@ -90,7 +90,6 @@ class _NGOUpcomingEventsState extends ConsumerState<NGOUpcomingEvents> {
                     },
                   );
                 }
-                break;
               default:
                 return const Center(child: CircularProgressIndicator());
             }
