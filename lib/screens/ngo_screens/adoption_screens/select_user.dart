@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:http/http.dart' as http;
 
-import '../../models/user.dart';
+import '../../../models/user.dart';
 
 class SelectUser extends ConsumerStatefulWidget {
   final String adoptionId;

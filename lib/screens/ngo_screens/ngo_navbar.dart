@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stray_animals_ui/models/ngo_model.dart';
-import 'package:stray_animals_ui/screens/adoption_screens/adoption_screen.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/adoption_screens/adoption_screen.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_events_main_screen.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:stray_animals_ui/screens/ngo_screens/volunteers/volunteer_list.dart';
+import '../../components/settgins.dart';
 import '../../models/event_model.dart';
 import '../../models/volunteer.dart';
 
@@ -102,7 +103,11 @@ class NavBar extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const Settings(),
+              ));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.feedback),

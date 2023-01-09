@@ -254,7 +254,8 @@ class AuthRepository {
         "role": role,
         "email": email,
         "profileURL": email,
-        "userReports": []
+        "userReports": [],
+        "adoptionPosts": []
       });
       if (res.user != null) {
         var response = _client.post(Uri.parse(url),

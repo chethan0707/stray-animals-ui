@@ -6,8 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/models/user.dart' as u;
 import 'package:stray_animals_ui/repositories/auth_repository.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
+import 'package:stray_animals_ui/screens/user_screens/adoptions.dart';
+import 'package:stray_animals_ui/screens/user_screens/adoptions/my_requests.dart';
 import 'package:stray_animals_ui/screens/user_screens/nearest_pet_store.dart';
 import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
+import 'package:stray_animals_ui/screens/user_screens/adoptions/user_adoption_screen.dart';
 import 'package:stray_animals_ui/screens/user_screens/user_home.dart';
 import 'package:stray_animals_ui/screens/user_screens/user_reports/my_reports.dart';
 
@@ -87,16 +90,25 @@ class _NavBarState extends ConsumerState<NavBar> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        MyReports(reports: widget.user.userReports, userEmail: widget.user.email!),
+                    builder: (context) => MyReports(
+                        reports: widget.user.userReports,
+                        userEmail: widget.user.email!),
                   ));
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.pets),
-            title: const Text('Adopt'),
-            onTap: () {},
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.pets),
+          //   title: const Text('Adopt'),
+          //   onTap: () {
+          //     Navigator.of(context).push(
+          //       MaterialPageRoute(
+          //         builder: (context) =>  UserAdoptionScreen(
+          //           ngo: ,
+          //         ),
+          //       ),
+          //     );
+          //   },
+          // ),
           ListTile(
               leading: const Icon(Icons.local_hospital),
               title: const Text('Near by Veterinary Clinics'),
@@ -107,11 +119,14 @@ class _NavBarState extends ConsumerState<NavBar> {
                   ),
                 );
               }),
-          const Divider(),
           ListTile(
-            leading: const Icon(Icons.share),
-            title: const Text('Share'),
-            onTap: () {},
+            leading: const Icon(Icons.pets),
+            title: const Text('Adoptions'),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Adoptions(user: widget.user),
+              ));
+            },
           ),
           const Divider(),
           ListTile(

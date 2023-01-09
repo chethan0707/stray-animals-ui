@@ -7,7 +7,6 @@ class AdoptionPost {
   String? description;
   Map<String, String>? requestList;
   List<String>? imageUrls;
-
   AdoptionPost(
       {this.id,
       this.ngoID,

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:stray_animals_ui/blocs/application_bloc.dart';
-import 'package:stray_animals_ui/components/volunteer_navbar.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_navbar.dart';
 import 'package:stray_animals_ui/models/ngo_model.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:http/http.dart' as http;

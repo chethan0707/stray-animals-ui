@@ -6,8 +6,10 @@ class User {
   String? role;
   String? profileUrl;
   List<String> userReports = [];
+  List<String> adoptionPosts = [];
   User(
-      {this.email,
+      {required this.adoptionPosts,
+      this.email,
       this.id,
       this.phone,
       this.userName,
@@ -23,6 +25,7 @@ class User {
     role = json['role'];
     profileUrl = json['profileURL'];
     userReports = List.castFrom<dynamic, String>(json['userReports']);
+    adoptionPosts = List.castFrom<dynamic, String>(json['adoptionPosts']);
   }
 
   Map<String, dynamic> toJson() {
@@ -34,6 +37,7 @@ class User {
     data['role'] = role;
     data['profileUrl'] = profileUrl;
     data['userReports'] = userReports;
+    data['adoptionPosts'] = adoptionPosts;
     return data;
   }
 }

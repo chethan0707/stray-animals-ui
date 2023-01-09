@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:stray_animals_ui/repositories/places_services.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/ngo_navbar.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/reports/ngo_report.dart';
 import '../../../models/ngo_model.dart';
+import '../../../models/volunteer.dart';
 
 class NGOCloseReports extends ConsumerStatefulWidget {
   final NGO ngo;
@@ -53,12 +55,16 @@ class _NGOCloseState extends ConsumerState<NGOCloseReports> {
                                       .getPlaceByCoordinates(LatLng(
                                           items[index].coordinates[0],
                                           items[index].coordinates[1]));
+                                  Volunteer? volunteer;
+                                  items[index].volunteer!.isEmpty
+                                      ? volunteer == null
+                                      : volunteer = await getVolunteer();
                                   navCont.push(
                                     MaterialPageRoute(
                                       builder: (context) => NGOReport(
                                           place: place,
                                           report: items[index],
-                                          volunteer: null),
+                                          volunteer: volunteer),
                                     ),
                                   );
                                 },
@@ -130,5 +136,17 @@ class _NGOCloseState extends ConsumerState<NGOCloseReports> {
         .toList();
 
     return items;
+  }
+
+  Future<Volunteer> getVolunteer() async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/volunteer/get").replace(
+        queryParameters: {"email": items[0].volunteer},
+      ),
+    );
+    var jsonBody = json.decode(response.body);
+    var vol = Volunteer.fromJson(jsonBody);
+    log(vol.email!);
+    return vol;
   }
 }

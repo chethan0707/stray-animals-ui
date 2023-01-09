@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:stray_animals_ui/models/user.dart';
-import 'package:stray_animals_ui/screens/profile_screen/image_picker/set_photo_screen.dart';
 import 'package:stray_animals_ui/screens/profile_screen/update_phone.dart';
 import 'package:stray_animals_ui/screens/profile_screen/user.dart';
 

@@ -13,10 +13,11 @@ class PlacesService {
   Future<List<PlaceSearch>> getAutoComplete(
       String search, double lat, double lng) async {
     var url =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=establishment&location=$lat%2C$lng&radius=500&key=$key";
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=establishment&location=$lat%2C$lng&radius=1000&key=$key";
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['predictions'] as List;
+    log(jsonResults.length.toString());
     return jsonResults.map((place) => PlaceSearch.fromJson(place)).toList();
   }
 
@@ -36,7 +37,7 @@ class PlacesService {
     var json = convert.jsonDecode(response.body);
     var jsonResult = json['candidates'] as List;
     var jsonR = PlacesDTO.fromJson(jsonResult[0]);
-    
+
     return PlacesDTO.fromJson(jsonResult[0]);
   }
 

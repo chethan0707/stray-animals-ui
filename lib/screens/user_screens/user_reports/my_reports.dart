@@ -28,8 +28,13 @@ class _MyReportsState extends ConsumerState<MyReports> {
       child: Scaffold(
         backgroundColor: Colors.grey[300],
         appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: Colors.grey[300],
           centerTitle: true,
-          title: const Text("My Reports"),
+          title: const Text(
+            "My Reports",
+            style: TextStyle(color: Colors.black),
+          ),
         ),
         body: Column(
           children: [

@@ -6,7 +6,7 @@ import 'package:stray_animals_ui/models/adoption_post.dart';
 import 'package:stray_animals_ui/models/user.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../components/photo_view_component.dart';
+import '../../../components/photo_view_component.dart';
 
 class ViewRequests extends ConsumerStatefulWidget {
   final List<User> requests;

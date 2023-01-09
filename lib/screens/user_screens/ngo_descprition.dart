@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stray_animals_ui/screens/adoption_screens/adoption_screen.dart';
+import 'package:stray_animals_ui/models/user.dart';
 import 'package:stray_animals_ui/screens/user_screens/events_screen/user_events_screen.dart';
+import 'package:stray_animals_ui/screens/user_screens/adoptions/user_adoption_screen.dart';
 import 'package:stray_animals_ui/screens/user_screens/user_reports/user_report_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../components/map_utils.dart';
@@ -15,7 +16,12 @@ import 'package:http/http.dart' as http;
 class NGODesc extends ConsumerStatefulWidget {
   final String userEmail;
   final NGO ngo;
-  const NGODesc({required this.userEmail, required this.ngo, super.key});
+  final User user;
+  const NGODesc(
+      {required this.user,
+      required this.userEmail,
+      required this.ngo,
+      super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NGODescState();
@@ -240,8 +246,9 @@ class _NGODescState extends ConsumerState<NGODesc> {
               InkWell(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AdoptionScreen(
+                    builder: (context) => UserAdoptionScreen(
                       ngo: widget.ngo,
+                      user: widget.user,
                     ),
                   ));
                 },
@@ -261,19 +268,20 @@ class _NGODescState extends ConsumerState<NGODesc> {
                   height: MediaQuery.of(context).size.height / 6,
                   width: MediaQuery.of(context).size.height / 6,
                   child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.pets,
-                          color: Colors.deepPurple,
-                          size: 40,
-                        ),
-                        Text(
-                          'Adopt',
-                          style: TextStyle(fontSize: 16),
-                          textAlign: TextAlign.center,
-                        )
-                      ]),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.pets,
+                        color: Colors.deepPurple,
+                        size: 40,
+                      ),
+                      Text(
+                        'Adopt',
+                        style: TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
                 ),
               )
             ],

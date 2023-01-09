@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -95,7 +96,7 @@ class _NGOReportState extends ConsumerState<NGOReport> {
               style: GoogleFonts.aldrich(),
             ),
           ),
-          widget.report.volunteer == null || widget.report.volunteer!.isEmpty
+          widget.report.volunteer!.isEmpty
               ? ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple[400]),
@@ -147,7 +148,7 @@ class _NGOReportState extends ConsumerState<NGOReport> {
                                           borderRadius:
                                               BorderRadius.circular(100),
                                           child: Image.network(
-                                            "http://localhost:8080/file/download/${widget.volunteer!.profileUrl}",
+                                            "http://localhost:8080/file/download/${widget.volunteer!.email}",
                                             height: 150,
                                             width: 150,
                                           ),
@@ -179,7 +180,9 @@ class _NGOReportState extends ConsumerState<NGOReport> {
                           },
                         );
                       },
-                      child: const Text("Volunteer assigned")),
+                      child: widget.report.status == true
+                          ? Text("Rescued by: ${widget.volunteer!.userName}")
+                          : const Text("Volunteer assigned")),
                 ),
         ],
       ),

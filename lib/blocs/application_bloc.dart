@@ -63,7 +63,7 @@ class ApplicationBloc extends ChangeNotifier {
     var sLocation = await placesService.getPlace(placeId);
     selectedLocation.add(sLocation);
     selectedLocationStatic = sLocation;
-
+    
     searchResults = [];
     notifyListeners();
     return LatLng(

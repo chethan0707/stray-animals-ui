@@ -5,22 +5,16 @@ class PlacesDTO {
     required this.formattedAddress,
     required this.geometry,
     required this.name,
-    required this.openingHours,
-    required this.rating,
   });
   late final String formattedAddress;
   late final Geometry geometry;
   late final String name;
-  late final OpeningHours? openingHours;
-  late final double rating;
 
   PlacesDTO.fromJson(Map<String, dynamic> json) {
     try {
       formattedAddress = json['formatted_address'];
       geometry = Geometry.fromJson(json['geometry']);
       name = json['name'];
-      openingHours = OpeningHours.fromJson(json['opening_hours']);
-      rating = double.parse(json['rating'].toString());
     } catch (e) {
       log(e.toString());
     }
@@ -31,8 +25,6 @@ class PlacesDTO {
     data['formatted_address'] = formattedAddress;
     data['geometry'] = geometry.toJson();
     data['name'] = name;
-    data['opening_hours'] = openingHours?.toJson();
-    data['rating'] = rating;
     return data;
   }
 }

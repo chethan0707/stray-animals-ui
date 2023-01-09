@@ -27,6 +27,8 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   final TextEditingController _zipController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _ngoPhoneNumberController =
+      TextEditingController();
 
   final TextEditingController _vPhController = TextEditingController();
   final TextEditingController _vuNameController = TextEditingController();
@@ -34,7 +36,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   late String vUname = "";
   late String vPhNo = "";
   late String vCity = "";
-
+  late String ngoPhone = "";
   late String userName = "";
   late String ngoName = "";
   late String city = "";
@@ -71,6 +73,9 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
     _phoneNumberController.addListener(() {
       phoneNumber = _phoneNumberController.text;
     });
+    _ngoPhoneNumberController.addListener(() {
+      ngoPhone = _ngoPhoneNumberController.text;
+    });
     super.initState();
   }
 
@@ -85,6 +90,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
     _stateController.dispose();
     _phoneNumberController.dispose();
     _zipController.dispose();
+    _ngoPhoneNumberController.dispose();
     super.dispose();
   }
 
@@ -153,6 +159,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.black),
         title: const Text("Create account"),
         backgroundColor: Colors.grey[300],
         elevation: 0,
@@ -287,8 +294,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                       ),
                     );
                   } else if (_currentItemSelected == "User" &&
-                      isUserNameEmpty(userName) &&
-                      phoneNumber.isEmpty) {
+                      (isUserNameEmpty(userName) || phoneNumber.isEmpty)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Fields cannot be empty"),
@@ -297,14 +303,14 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                   } else if (isProfileImageSet == false) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("Uppload profile picture"),
+                        content: Text("Upload profile picture"),
                       ),
                     );
                   } else if (_currentItemSelected == "NGO" &&
                       (ngoName.isEmpty ||
                           city.isEmpty ||
                           zipCode.isEmpty ||
-                          phoneNumber.isEmpty)) {
+                          ngoPhone.isEmpty)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Fill all fields"),
@@ -505,7 +511,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
             const SizedBox(
               height: 15,
             ),
-            buildTextFiled(_phoneNumberController, 'Phone number'),
+            buildTextFiled(_ngoPhoneNumberController, 'Phone number'),
 
             const SizedBox(
               height: 20,

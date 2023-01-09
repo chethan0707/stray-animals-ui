@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,6 +45,7 @@ class _NGOHomeState extends ConsumerState<NGOOpenReports> {
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
+                      log(items[index].description);
                       return items[index].status == false
                           ? Padding(
                               padding: const EdgeInsets.all(15),
@@ -55,8 +57,8 @@ class _NGOHomeState extends ConsumerState<NGOOpenReports> {
                                           items[index].coordinates[0],
                                           items[index].coordinates[1]));
                                   Volunteer? volunteer;
-                                  items[index].volunteer == null ||
-                                          items[index].volunteer!.isEmpty
+
+                                  items[index].volunteer!.isEmpty
                                       ? volunteer == null
                                       : volunteer = await getVolunteer();
                                   navCont.push(
@@ -124,6 +126,7 @@ class _NGOHomeState extends ConsumerState<NGOOpenReports> {
   }
 
   Future<Volunteer> getVolunteer() async {
+   
     final response = await http.get(
       Uri.parse("http://localhost:8080/api/volunteer/get").replace(
         queryParameters: {"email": items[0].volunteer},

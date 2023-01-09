@@ -115,9 +115,6 @@ class _AddAdoptionPostState extends ConsumerState<AddAdoptionPost> {
                           onPressed: () async {
                             var cont = ScaffoldMessenger.of(context);
                             var navCont = Navigator.of(context);
-                            if (_selectedFiles.isNotEmpty) {
-                              await uploadFunction(_selectedFiles);
-                            }
 
                             if (title.isEmpty) {
                               cont.showSnackBar(
@@ -138,19 +135,25 @@ class _AddAdoptionPostState extends ConsumerState<AddAdoptionPost> {
                             } else if (_selectedFiles.isEmpty) {
                               cont.showSnackBar(
                                 const SnackBar(
-                                  content: Text('Upload images'),
-                                ),
-                              );
-                            } else if (await addPost(cont) == true) {
-                              cont.showSnackBar(
-                                const SnackBar(
                                   content: Text(
-                                    'Adoption posted sucessfully',
-                                    style: TextStyle(color: Colors.green),
+                                    'Upload images',
                                   ),
                                 ),
                               );
-                              navCont.pop();
+                            } else if (_selectedFiles.isNotEmpty) {
+                              await uploadFunction(_selectedFiles);
+
+                              if (await addPost(cont) == true) {
+                                cont.showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Adoption posted sucessfully',
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                  ),
+                                );
+                                navCont.pop();
+                              }
                             }
                           },
                           icon: const Icon(Icons.image_outlined),

@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:stray_animals_ui/screens/adoption_screens/select_user.dart';
-import 'package:stray_animals_ui/screens/adoption_screens/view_requests.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/adoption_screens/select_user.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/adoption_screens/view_requests.dart';
 import 'package:http/http.dart' as http;
-import '../../models/adoption_post.dart';
-import '../../models/user.dart';
-import '../ngo_screens/reports/carousel_view.dart';
+import '../../../models/adoption_post.dart';
+import '../../../models/user.dart';
+import '../reports/carousel_view.dart';
 
 class OpenAdoptionPost extends ConsumerStatefulWidget {
   final AdoptionPost adoptionPost;

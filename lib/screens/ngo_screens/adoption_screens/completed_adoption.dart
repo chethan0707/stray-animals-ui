@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stray_animals_ui/models/adoption_post.dart';
 import 'package:http/http.dart' as http;
-import 'package:stray_animals_ui/screens/adoption_screens/closed_adoption_post.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/adoption_screens/closed_adoption_post.dart';
 
 class CompletedAdoptionReport extends ConsumerStatefulWidget {
   final String ngoEmail;
@@ -60,8 +60,7 @@ class _PendingAdoptionReportState
                                 },
                                 title: Text(posts[index].title!),
                                 subtitle: Text(posts[index].description!),
-                                trailing:
-                                    Text("Status: ${posts[index].status}"),
+                                trailing: const Text("Status: Completed"),
                               ),
                             ),
                           ),

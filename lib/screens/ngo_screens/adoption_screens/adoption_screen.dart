@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stray_animals_ui/models/ngo_model.dart';
-import 'package:stray_animals_ui/screens/adoption_screens/completed_adoption.dart';
-import 'package:stray_animals_ui/screens/adoption_screens/pending_adoption_posts.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/adoption_screens/completed_adoption.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/adoption_screens/pending_adoption_posts.dart';
 
 import 'add_adption_post.dart';
 

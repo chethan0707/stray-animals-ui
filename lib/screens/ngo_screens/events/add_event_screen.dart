@@ -152,6 +152,14 @@ class _AddEventState extends ConsumerState<AddEvent> {
                                   ),
                                 ),
                               );
+                            } else if (eventName.isEmpty) {
+                              cont.showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Event name cannot be empty',
+                                  ),
+                                ),
+                              );
                             } else if (_selectedFiles.isEmpty) {
                               cont.showSnackBar(
                                 const SnackBar(

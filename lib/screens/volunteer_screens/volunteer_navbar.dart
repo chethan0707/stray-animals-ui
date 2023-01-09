@@ -14,8 +14,8 @@ import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:stray_animals_ui/screens/volunteer_screens/nearest_pet_clinic_vol.dart';
 import "package:http/http.dart" as http;
 import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_home.dart';
-import '../blocs/application_bloc.dart';
-import '../models/ngo_model.dart';
+import '../../blocs/application_bloc.dart';
+import '../../models/ngo_model.dart';
 
 class VolunteerNavBar extends ConsumerStatefulWidget {
   final Volunteer vol;
