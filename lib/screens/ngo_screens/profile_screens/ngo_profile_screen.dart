@@ -1,24 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:stray_animals_ui/models/user.dart';
-import 'package:stray_animals_ui/screens/profile_screen/update_phone.dart';
 
-import 'display_image.dart';
-import 'edit_email.dart';
+import '../../../models/ngo_model.dart';
+import '../../profile_screen/display_image.dart';
+import '../../profile_screen/image_picker/set_photo_screen.dart';
 import 'edit_name.dart';
-import 'image_picker/set_photo_screen.dart';
+import 'update_phone.dart';
 
 // This class handles the Page to dispaly the user's info on the "Edit Profile" Screen
-class ProfilePage extends StatefulWidget {
-  final User user;
 
-  const ProfilePage({super.key, required this.user});
+class NGOProfilePage extends StatefulWidget {
+  final NGO ngo;
+
+  const NGOProfilePage({super.key, required this.ngo});
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _NGOProfilePageState createState() => _NGOProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _NGOProfilePageState extends State<NGOProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,41 +52,90 @@ class _ProfilePageState extends State<ProfilePage> {
           InkWell(
               onTap: () {
                 navigateSecondPage(SetPhotoScreen(
-                  email: widget.user.email!,
+                  email: widget.ngo.email,
                 ));
               },
               child: DisplayImage(
                 imagePath:
-                    "http://localhost:8080/file/download/${widget.user.email}",
+                    "http://localhost:8080/file/download/${widget.ngo.email}",
                 onPressed: () {
                   setState(() {});
                 },
               )),
           buildUserInfoDisplay(
-            widget.user.userName!,
+            widget.ngo.name,
             'Name',
-            EditNameFormPage(
-              user: widget.user,
-              uname: widget.user.userName!,
+            NGOEditNameFormPage(
+              ngo: widget.ngo,
             ),
           ),
           buildUserInfoDisplay(
-            widget.user.phone!,
+            widget.ngo.phone,
             'Phone',
-            EditPhoneFormPage(
-              user: widget.user,
+            NGOEditPhoneFormPage(
+              ngo: widget.ngo,
             ),
           ),
-          buildUserInfoDisplay(
-              widget.user.email!,
-              'Email',
-              EditEmailFormPage(
-                user: widget.user,
-              )),
+          buildWidgets(
+            widget.ngo.email,
+            'Email',
+          ),
+          buildWidgets(
+            widget.ngo.rescueCount.toString(),
+            'Animals Rescued',
+          ),
+          buildWidgets(
+            widget.ngo.city,
+            'City',
+          )
         ],
       ),
     );
   }
+
+  Widget buildWidgets(String getValue, String title) => Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(
+            height: 3,
+          ),
+          Container(
+            width: 350,
+            height: 40,
+            decoration: const BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+              color: Colors.deepPurple,
+              width: 1,
+            ))),
+            child: Row(
+              children: [
+                Expanded(
+                    child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          getValue,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              height: 1.4,
+                              color: Colors.deepPurple),
+                        ))),
+              ],
+            ),
+          )
+        ],
+      ));
 
   // Widget builds the display item with the proper formatting to display the user's info
   Widget buildUserInfoDisplay(String getValue, String title, Widget editPage) =>
@@ -108,33 +157,38 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 3,
               ),
               Container(
-                  width: 350,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                    color: Colors.deepPurple,
-                    width: 1,
-                  ))),
-                  child: Row(children: [
+                width: 350,
+                height: 40,
+                decoration: const BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                  color: Colors.deepPurple,
+                  width: 1,
+                ))),
+                child: Row(
+                  children: [
                     Expanded(
                         child: TextButton(
-                            onPressed: () {
-                              navigateSecondPage(editPage);
-                            },
+                            onPressed: title != 'Email'
+                                ? () {
+                                    navigateSecondPage(editPage);
+                                  }
+                                : () {},
                             child: Text(
                               getValue,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 16,
                                   height: 1.4,
                                   color: Colors.deepPurple),
                             ))),
-                    Icon(
+                    const Icon(
                       Icons.keyboard_arrow_right,
                       color: Colors.black,
                       size: 40.0,
                     )
-                  ]))
+                  ],
+                ),
+              )
             ],
           ));
 

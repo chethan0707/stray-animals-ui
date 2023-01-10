@@ -1,18 +1,18 @@
-import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:stray_animals_ui/components/settgins.dart';
 import 'package:stray_animals_ui/models/user.dart' as u;
 import 'package:stray_animals_ui/repositories/auth_repository.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:stray_animals_ui/screens/user_screens/adoptions.dart';
-import 'package:stray_animals_ui/screens/user_screens/adoptions/my_requests.dart';
 import 'package:stray_animals_ui/screens/user_screens/nearest_pet_store.dart';
 import 'package:stray_animals_ui/screens/profile_screen/user_profile_screen.dart';
-import 'package:stray_animals_ui/screens/user_screens/adoptions/user_adoption_screen.dart';
 import 'package:stray_animals_ui/screens/user_screens/user_home.dart';
 import 'package:stray_animals_ui/screens/user_screens/user_reports/my_reports.dart';
+import 'package:http/http.dart' as http;
 
 class NavBar extends ConsumerStatefulWidget {
   final u.User user;
@@ -31,6 +31,10 @@ class _NavBarState extends ConsumerState<NavBar> {
     super.initState();
   }
 
+  Future<Uint8List> getImageBytes(String path) async {
+    var response = await http.get(Uri.parse(path));
+    return response.bodyBytes;
+  }
   // getImageUrl(String? email) async {
   //   var user = await ref.read(authRepositoryProvider).getUserFromDB(email!);
   //   widget.user.profileUrl = user!.profileUrl;
@@ -141,6 +145,17 @@ class _NavBarState extends ConsumerState<NavBar> {
                   (route) => false);
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('Settings'),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const Settings(),
+                ),
+              );
+            },
+          )
         ],
       ),
     );

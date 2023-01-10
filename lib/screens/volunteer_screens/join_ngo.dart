@@ -144,6 +144,12 @@ class _JoinNGOState extends ConsumerState<JoinNGO> {
                 height: 10,
               ),
               Text(
+                "NGO Name: ${widget.ngos[selectedIndex].name}",
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
                 "Email: ${widget.ngos[selectedIndex].email}",
               ),
               const SizedBox(height: 10),

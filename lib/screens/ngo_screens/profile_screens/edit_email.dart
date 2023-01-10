@@ -5,27 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:stray_animals_ui/models/user.dart';
 
-import '../../components/appvar_widget.dart';
+import '../../../components/appvar_widget.dart';
+import '../../../models/ngo_model.dart';
 
 // This class handles the Page to edit the Email Section of the User Profile.
-class EditEmailFormPage extends StatefulWidget {
-  final User user;
-  const EditEmailFormPage({Key? key, required this.user}) : super(key: key);
+class NGOEditEmailFormPage extends StatefulWidget {
+  final NGO ngo;
+  const NGOEditEmailFormPage({Key? key, required this.ngo}) : super(key: key);
 
   @override
-  EditEmailFormPageState createState() {
-    return EditEmailFormPageState();
+  NGOEditEmailFormPageState createState() {
+    return NGOEditEmailFormPageState();
   }
 }
 
-class EditEmailFormPageState extends State<EditEmailFormPage> {
+class NGOEditEmailFormPageState extends State<NGOEditEmailFormPage> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   @override
   void initState() {
-    emailController.text = widget.user.email!;
+    emailController.text = widget.ngo.email;
     emailController.addListener(() {
-      widget.user.email = emailController.text;
+      widget.ngo.email = emailController.text;
     });
     super.initState();
   }
@@ -37,7 +38,7 @@ class EditEmailFormPageState extends State<EditEmailFormPage> {
   }
 
   void updateUserValue(String email) {
-    widget.user.email = email;
+    widget.ngo.email = email;
   }
 
   @override
@@ -102,16 +103,7 @@ class EditEmailFormPageState extends State<EditEmailFormPage> {
                                   Uri.parse(
                                       "http://localhost:8080/api/user/update"),
                                   body: jsonEncode(
-                                    {
-                                      "id": widget.user.id,
-                                      "userName": widget.user.userName,
-                                      "phone": widget.user.phone,
-                                      "role": widget.user.role,
-                                      "email": widget.user.email,
-                                      "profileURL": widget.user.profileUrl,
-                                      "userReports": widget.user.userReports,
-                                      "adoptionPosts": widget.user.adoptionPosts
-                                    },
+                                    {},
                                   ),
                                   headers: <String, String>{
                                     'Content-Type':

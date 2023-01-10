@@ -1,6 +1,8 @@
-import 'dart:io';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:stray_animals_ui/components/image_view.dart';
+import 'package:stray_animals_ui/components/photo_view_component.dart';
 
 class DisplayImage extends StatelessWidget {
   final String imagePath;
@@ -15,30 +17,35 @@ class DisplayImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Color.fromARGB(255, 87, 71, 179);
+    const color = Color.fromARGB(255, 87, 71, 179);
 
     return Center(
         child: Stack(children: [
-      buildImage(color),
+      InkWell(
+          onTap: () {
+            log(imagePath);
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ImageView(url: imagePath),
+            ));
+          },
+          child: buildImage(color)),
       Positioned(
-        child: buildEditIcon(color),
         right: 4,
         top: 10,
+        child: buildEditIcon(color),
       )
     ]));
   }
 
   // Builds Profile Image
   Widget buildImage(Color color) {
-    final image = imagePath.contains('http')
-        ? NetworkImage(imagePath)
-        : FileImage(File(imagePath));
+    final image = NetworkImage(imagePath);
 
     return CircleAvatar(
       radius: 75,
       backgroundColor: color,
       child: CircleAvatar(
-        backgroundImage: image as ImageProvider,
+        backgroundImage: image,
         radius: 70,
       ),
     );

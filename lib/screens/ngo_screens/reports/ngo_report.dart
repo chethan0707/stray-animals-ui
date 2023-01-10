@@ -76,10 +76,10 @@ class _NGOReportState extends ConsumerState<NGOReport> {
           const SizedBox(
             height: 30,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0),
-            child: Text("Location: ${widget.place.formattedAddress}"),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 25.0),
+          //   child: Text("Location: ${widget.place.formattedAddress}"),
+          // ),
           const SizedBox(
             height: 20,
           ),

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as p;
+import 'package:stray_animals_ui/components/settgins.dart';
 import 'package:stray_animals_ui/models/event_model.dart';
 import 'package:stray_animals_ui/models/volunteer.dart';
 import 'package:stray_animals_ui/screens/volunteer_screens/join_ngo.dart';
@@ -13,6 +14,7 @@ import 'package:stray_animals_ui/screens/volunteer_screens/events/vol_events.dar
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:stray_animals_ui/screens/volunteer_screens/nearest_pet_clinic_vol.dart';
 import "package:http/http.dart" as http;
+import 'package:stray_animals_ui/screens/volunteer_screens/profile_screens/vol_profile_screen.dart';
 import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_home.dart';
 import '../../blocs/application_bloc.dart';
 import '../../models/ngo_model.dart';
@@ -47,9 +49,35 @@ class _NavBarState extends ConsumerState<VolunteerNavBar> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const SizedBox(
-            height: 50,
+          UserAccountsDrawerHeader(
+            accountName: Text(widget.vol.userName!),
+            accountEmail: Text(widget.vol.email!),
+            currentAccountPicture: InkWell(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => VolunteerProfilePage(ngo: widget.vol),
+                ));
+              },
+              child: CircleAvatar(
+                child: ClipOval(
+                  child: Image.network(
+                    'http://localhost:8080/file/download/${widget.vol.email}',
+                    fit: BoxFit.cover,
+                    width: 90,
+                    height: 90,
+                  ),
+                ),
+              ),
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.deepPurple,
+              // image: DecorationImage(
+              //     fit: BoxFit.fill,
+              //     image: NetworkImage(
+              //         'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg')),
+            ),
           ),
+
           ListTile(
             leading: const Icon(Icons.house),
             title: const Text('Reports'),
@@ -73,11 +101,11 @@ class _NavBarState extends ConsumerState<VolunteerNavBar> {
               ));
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.pets),
-            title: const Text('Adopt'),
-            onTap: () {},
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.pets),
+          //   title: const Text('Adopt'),
+          //   onTap: () {},
+          // ),
           ListTile(
               leading: const Icon(Icons.local_hospital),
               title: const Text('Near by Veterinary Clinics'),
@@ -87,7 +115,6 @@ class _NavBarState extends ConsumerState<VolunteerNavBar> {
                       NearestPetClinicsVolunteer(vol: widget.vol),
                 ));
               }),
-          const Divider(),
           ListTile(
             leading: const Icon(Icons.share),
             title: const Text('My NGO'),
@@ -115,6 +142,14 @@ class _NavBarState extends ConsumerState<VolunteerNavBar> {
             },
           ),
           const Divider(),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const Settings()));
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),

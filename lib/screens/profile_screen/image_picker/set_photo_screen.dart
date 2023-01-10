@@ -1,12 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import "package:http_parser/http_parser.dart";
 import 'common_buttons.dart';
 import 'constants.dart';
 import 'select_photo_options_screen.dart';
@@ -59,17 +57,21 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
     if (_image != null) {
       log("file available");
 
-      FormData data = FormData.fromMap({
-        "file": await MultipartFile.fromFile(
-          _image!.path,
-          filename: fileName,
-        ),
-      });
+      FormData data = FormData.fromMap(
+        {
+          "file": await MultipartFile.fromFile(
+            _image!.path,
+            filename: fileName,
+          ),
+        },
+      );
       try {
         var res = await dio.post(url, data: data);
-        log(res.data.toString());
+        if (res.statusCode == 200) {
+          return fileName;
+        }
       } catch (e) {
-        log(e.toString());
+        return "";
       }
     } else {
       var im = await dio.get(
@@ -81,7 +83,6 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
           filename: fileName,
         ),
       });
-      log(fileName);
       try {
         var res = await dio.post(url, data: data);
         log(res.data.toString());
@@ -193,9 +194,19 @@ class _SetPhotoScreenState extends State<SetPhotoScreen> {
                 children: [
                   InkWell(
                     onTap: () async {
-                      var navCon = Navigator.of(context);
-                      await uploadImage();
-                      navCon.pop();
+                      var navCon = Navigator.pop(context, true);
+                      var scaf = ScaffoldMessenger.of(context);
+                      var str = await uploadImage();
+                      if (str.isEmpty) {
+                        scaf.showSnackBar(const SnackBar(
+                            content: Text("Something went wrong!!!")));
+                      } else {
+                        scaf.showSnackBar(const SnackBar(
+                            content:
+                                Text("Profile photo updated successfully!!!")));
+                        Future.delayed(const Duration(seconds: 1));
+                        navCon;
+                      }
                     },
                     child: const Text(
                       'Save',

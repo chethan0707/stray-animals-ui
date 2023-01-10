@@ -287,48 +287,48 @@ class MyNGODescState extends ConsumerState<MyNGODesc> {
             const SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () {
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //   builder: (context) => const AdoptionScreen(),
-                    // ),);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10)),
-                      ],
-                    ),
-                    margin: EdgeInsets.only(
-                        right: (MediaQuery.of(context).size.height / 25)),
-                    height: MediaQuery.of(context).size.height / 6,
-                    width: MediaQuery.of(context).size.height / 6,
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.pets,
-                            color: Colors.deepPurple,
-                            size: 40,
-                          ),
-                          Text(
-                            'Adopt',
-                            style: TextStyle(fontSize: 16),
-                            textAlign: TextAlign.center,
-                          )
-                        ]),
-                  ),
-                )
-              ],
-            )
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     InkWell(
+            //       onTap: () {
+            //         // Navigator.of(context).push(MaterialPageRoute(
+            //         //   builder: (context) => const AdoptionScreen(),
+            //         // ),);
+            //       },
+            //       child: Container(
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(7),
+            //           color: Colors.white,
+            //           boxShadow: [
+            //             BoxShadow(
+            //                 color: Colors.grey.withOpacity(0.3),
+            //                 blurRadius: 20,
+            //                 offset: const Offset(0, 10)),
+            //           ],
+            //         ),
+            //         margin: EdgeInsets.only(
+            //             right: (MediaQuery.of(context).size.height / 25)),
+            //         height: MediaQuery.of(context).size.height / 6,
+            //         width: MediaQuery.of(context).size.height / 6,
+            //         child: Column(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: const [
+            //               Icon(
+            //                 Icons.pets,
+            //                 color: Colors.deepPurple,
+            //                 size: 40,
+            //               ),
+            //               Text(
+            //                 'Adopt',
+            //                 style: TextStyle(fontSize: 16),
+            //                 textAlign: TextAlign.center,
+            //               )
+            //             ]),
+            //       ),
+            //     )
+            //   ],
+            // )
           ],
         ));
   }

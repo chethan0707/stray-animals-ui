@@ -7,6 +7,7 @@ import 'package:stray_animals_ui/screens/ngo_screens/adoption_screens/adoption_s
 import 'package:stray_animals_ui/screens/ngo_screens/events/ngo_events_main_screen.dart';
 import 'package:stray_animals_ui/screens/login_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:stray_animals_ui/screens/ngo_screens/profile_screens/ngo_profile_screen.dart';
 import 'package:stray_animals_ui/screens/ngo_screens/volunteers/volunteer_list.dart';
 import '../../components/settgins.dart';
 import '../../models/event_model.dart';
@@ -27,15 +28,14 @@ class NavBar extends StatelessWidget {
             accountEmail: Text(ngo.email),
             currentAccountPicture: InkWell(
               onTap: () {
-                // TODO: NGO profile page edit
-                // Navigator.of(context).push(MaterialPageRoute(
-                //   builder: (context) => ProfilePage(),
-                // ));
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => NGOProfilePage(ngo: ngo),
+                ));
               },
               child: CircleAvatar(
                 child: ClipOval(
                   child: Image.network(
-                    'https://as2.ftcdn.net/v2/jpg/01/18/03/35/1000_F_118033506_uMrhnrjBWBxVE9sYGTgBht8S5liVnIeY.jpg',
+                    'http://localhost:8080/file/download/${ngo.email}',
                     fit: BoxFit.cover,
                     width: 90,
                     height: 90,
@@ -109,11 +109,11 @@ class NavBar extends StatelessWidget {
               ));
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.feedback),
-            title: const Text('Feedback'),
-            onTap: () {},
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.feedback),
+          //   title: const Text('Feedback'),
+          //   onTap: () {},
+          // ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.logout),

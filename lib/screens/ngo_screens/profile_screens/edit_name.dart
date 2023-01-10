@@ -2,34 +2,34 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:stray_animals_ui/models/user.dart';
+import 'package:stray_animals_ui/models/ngo_model.dart';
 import 'package:string_validator/string_validator.dart';
 
-import '../../components/appvar_widget.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../components/appvar_widget.dart';
+import '../ngo_home.dart';
+
 // This class handles the Page to edit the Name Section of the User Profile.
-class EditNameFormPage extends StatefulWidget {
-  final String uname;
-  final User user;
-  const EditNameFormPage({required this.user, Key? key, required this.uname})
-      : super(key: key);
+class NGOEditNameFormPage extends StatefulWidget {
+  NGO ngo;
+  NGOEditNameFormPage({required this.ngo, Key? key}) : super(key: key);
 
   @override
-  EditNameFormPageState createState() {
-    return EditNameFormPageState();
+  NGOEditNameFormPageState createState() {
+    return NGOEditNameFormPageState();
   }
 }
 
-class EditNameFormPageState extends State<EditNameFormPage> {
+class NGOEditNameFormPageState extends State<NGOEditNameFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _userNameController = TextEditingController();
 
   @override
   void initState() {
-    _userNameController.text = widget.uname;
+    _userNameController.text = widget.ngo.name;
     _userNameController.addListener(() {
-      widget.user.userName = _userNameController.text;
+      widget.ngo.name = _userNameController.text;
     });
     super.initState();
   }
@@ -41,7 +41,7 @@ class EditNameFormPageState extends State<EditNameFormPage> {
   }
 
   void updateUserValue(String name) {
-    widget.user.userName = name;
+    // widget.ngo.name = name;
   }
 
   @override
@@ -58,7 +58,7 @@ class EditNameFormPageState extends State<EditNameFormPage> {
               const SizedBox(
                 width: 330,
                 child: Text(
-                  "What's Your Name?",
+                  "What's Your NGO Name?",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -76,17 +76,16 @@ class EditNameFormPageState extends State<EditNameFormPage> {
                             height: 100,
                             width: 320,
                             child: TextFormField(
+                              maxLength: 30,
                               // Handles Form Validation for First Name
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your first name';
-                                } else if (!isAlpha(value)) {
-                                  return 'Only Letters Please';
+                                  return 'Please enter NGO name';
                                 }
                                 return null;
                               },
                               decoration: const InputDecoration(
-                                labelText: 'User Name',
+                                labelText: 'NGO Name',
                               ),
                               controller: _userNameController,
                             ))),
@@ -96,30 +95,53 @@ class EditNameFormPageState extends State<EditNameFormPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: InkWell(
-                  onTap: () {
-                    log(widget.user.userName!);
+                  onTap: () async {
+                    var nav = Navigator.of(context);
+                    var scaff = ScaffoldMessenger.of(context);
+                    log(widget.ngo.name);
                     // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate() &&
-                        isAlpha(_userNameController.text)) {
-                      updateUserValue(_userNameController.text);
-                      var res = http.post(
-                          Uri.parse("http://localhost:8080/api/user/update"),
-                          body: jsonEncode(
-                            {
-                              "id": widget.user.id,
-                              "userName": widget.user.userName,
-                              "phone": widget.user.phone,
-                              "role": widget.user.role,
-                              "email": widget.user.email,
-                              "profileURL": widget.user.profileUrl,
-                              "userReports": widget.user.userReports,
-                              "adoptionPosts": widget.user.adoptionPosts
-                            },
+                    if (_formKey.currentState!.validate()) {
+                      var res = await http.post(
+                        Uri.parse("http://localhost:8080/api/ngo/update"),
+                        body: jsonEncode(
+                          {
+                            "id": widget.ngo.id,
+                            "name": _userNameController.text,
+                            "phone": widget.ngo.phone,
+                            "email": widget.ngo.email,
+                            "city": widget.ngo.city,
+                            "volunteers": widget.ngo.volunteers,
+                            "coordinates": widget.ngo.coordinates,
+                            "userReports": widget.ngo.reports,
+                            "address": widget.ngo.address,
+                            "role": widget.ngo.role,
+                            "events": widget.ngo.events,
+                            "rescueCount": widget.ngo.rescueCount,
+                          },
+                        ),
+                        headers: <String, String>{
+                          'Content-Type': 'application/json; charset=UTF-8',
+                        },
+                      );
+                      if (res.statusCode == 200) {
+                        scaff.showSnackBar(const SnackBar(
+                            content: Text("Updated Successfully")));
+                        res = await http.get(Uri.parse(
+                            "http://localhost:8080/api/ngo/get?email=${widget.ngo.email}"));
+                        log(res.body.toString());
+                        var ngo = NGO.fromJson(jsonDecode(res.body));
+                        nav.pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => NGOHome(
+                              ngo: ngo,
+                            ),
                           ),
-                          headers: <String, String>{
-                            'Content-Type': 'application/json; charset=UTF-8',
-                          });
-                      Navigator.pop(context);
+                          (route) => false,
+                        );
+                      } else {
+                        scaff.showSnackBar(
+                            const SnackBar(content: Text("Error Updating")));
+                      }
                     }
                   },
                   child: Container(

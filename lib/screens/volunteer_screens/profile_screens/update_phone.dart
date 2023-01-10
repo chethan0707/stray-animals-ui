@@ -1,31 +1,36 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:stray_animals_ui/models/volunteer.dart';
+import 'package:stray_animals_ui/screens/ngo_screens/ngo_home.dart';
+import 'package:stray_animals_ui/screens/volunteer_screens/volunteer_home.dart';
 import 'package:string_validator/string_validator.dart';
 
-import '../../components/appvar_widget.dart';
-import '../../models/user.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../components/appvar_widget.dart';
+import '../../../models/ngo_model.dart';
+
 // This class handles the Page to edit the Phone Section of the User Profile.
-class EditPhoneFormPage extends StatefulWidget {
-  final User user;
-  const EditPhoneFormPage({required this.user, Key? key}) : super(key: key);
+class VolEditPhoneFormPage extends StatefulWidget {
+  final Volunteer ngo;
+  const VolEditPhoneFormPage({required this.ngo, Key? key}) : super(key: key);
   @override
-  EditPhoneFormPageState createState() {
-    return EditPhoneFormPageState();
+  VolEditPhoneFormPageState createState() {
+    return VolEditPhoneFormPageState();
   }
 }
 
-class EditPhoneFormPageState extends State<EditPhoneFormPage> {
+class VolEditPhoneFormPageState extends State<VolEditPhoneFormPage> {
   final _formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
 
   @override
   void initState() {
-    phoneController.text = widget.user.phone!;
+    phoneController.text = widget.ngo.phone!;
     phoneController.addListener(() {
-      widget.user.phone = phoneController.text;
+      widget.ngo.phone = phoneController.text;
     });
     super.initState();
   }
@@ -34,10 +39,6 @@ class EditPhoneFormPageState extends State<EditPhoneFormPage> {
   void dispose() {
     phoneController.dispose();
     super.dispose();
-  }
-
-  void updateUserValue(String phone) {
-    widget.user.phone = phone;
   }
 
   @override
@@ -64,7 +65,7 @@ class EditPhoneFormPageState extends State<EditPhoneFormPage> {
                         height: 100,
                         width: 320,
                         child: TextFormField(
-                          // Handles Form Validation
+                          maxLength: 10,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your phone number';
@@ -85,25 +86,28 @@ class EditPhoneFormPageState extends State<EditPhoneFormPage> {
                     child: Align(
                         alignment: Alignment.bottomCenter,
                         child: InkWell(
-                          onTap: () {
-                            // Validate returns true if the form is valid, or false otherwise.
+                          onTap: () async {
+                            var nav = Navigator.of(context);
+                            var scaff = ScaffoldMessenger.of(
+                                context); // Validate returns true if the form is valid, or false otherwise.
                             if (_formKey.currentState!.validate() &&
                                 isNumeric(phoneController.text)) {
-                              updateUserValue(phoneController.text);
-
-                              var res = http.post(
+                              var res = await http.post(
                                 Uri.parse(
-                                    "http://localhost:8080/api/user/update"),
+                                    "http://localhost:8080/api/volunteer/update"),
                                 body: jsonEncode(
                                   {
-                                    "id": widget.user.id,
-                                    "userName": widget.user.userName,
-                                    "phone": widget.user.phone,
-                                    "role": widget.user.role,
-                                    "email": widget.user.email,
-                                    "profileURL": widget.user.profileUrl,
-                                    "userReports": widget.user.userReports,
-                                    "adoptionPosts": widget.user.adoptionPosts
+                                    "id": widget.ngo.id,
+                                    "userName": widget.ngo.userName,
+                                    "phone": widget.ngo.phone,
+                                    "role": "Volunteer",
+                                    "email": widget.ngo.email,
+                                    "resueCount": widget.ngo.rescueCount,
+                                    "profileUrl": widget.ngo.profileUrl,
+                                    "reports": widget.ngo.reports,
+                                    "city": widget.ngo.city,
+                                    "events": widget.ngo.events,
+                                    "ngos": widget.ngo.ngos
                                   },
                                 ),
                                 headers: <String, String>{
@@ -111,7 +115,27 @@ class EditPhoneFormPageState extends State<EditPhoneFormPage> {
                                       'application/json; charset=UTF-8',
                                 },
                               );
-                              Navigator.pop(context);
+
+                              if (res.statusCode == 200) {
+                                scaff.showSnackBar(const SnackBar(
+                                    content: Text("Updated Successfully")));
+                                res = await http.get(Uri.parse(
+                                    "http://localhost:8080/api/volunteer/get?email=${widget.ngo.email}"));
+                                log(res.body.toString());
+                                var ngo =
+                                    Volunteer.fromJson(jsonDecode(res.body));
+                                nav.pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => VolunteerHome(
+                                      vol: ngo,
+                                    ),
+                                  ),
+                                  (route) => false,
+                                );
+                              } else {
+                                scaff.showSnackBar(const SnackBar(
+                                    content: Text("Error Updating")));
+                              }
                             }
                           },
                           child: Container(
